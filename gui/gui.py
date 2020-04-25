@@ -1,8 +1,9 @@
 import sys
 
-from PyQt5.QtWidgets import QApplication, QWidget, QToolTip, QPushButton, QMessageBox, QDesktopWidget, QHBoxLayout, \
-    QVBoxLayout, QLineEdit,QMainWindow, QInputDialog
-from PyQt5.QtGui import QIcon, QFont
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QDesktopWidget, QHBoxLayout, \
+    QVBoxLayout, QLineEdit, QMainWindow, QInputDialog
+from PyQt5.QtGui import QIcon, QPixmap, QPainter, QCursor
 
 import SpiderTabs as st
 
@@ -41,11 +42,67 @@ class MainWindow(QMainWindow):
 
         panel = QWidget()
         panel.setLayout(vbox)
+        panel.setContentsMargins(8,35,8,0)
         self.statusBar()
         self.setCentralWidget(panel)
-        self.setGeometry(0, 0, 400, 250)
+        self.setStyleSheet('*{padding:5px}'
+                           'QStatusBar{font-family:幼圆;font-size: 14px;}'
+                           'QLineEdit{font:bold;font-size: 17px;}'
+                           'QLabel{font-size: 17px;}'
+                           '''
+                           QTabWidget::pane{
+                                border:none;
+                            }
+                            QTabWidget::tab-bar{
+                                alignment:left;
+                            }
+                           QTabBar::tab{
+                                margin-right:1ex;
+                                background:transparent;
+                                color:white;
+                                font:bold;
+                                font-size:15px;
+                                font-family:幼圆;
+                                min-width:25ex;
+                                min-height:8ex;
+                                border-radius:10px
+                            }
+                            QTabBar::tab:hover{
+                                background:rgb(255, 255, 255, 100);
+                            }
+                            QTabBar::tab:selected{
+                                border-color: white;
+                                background:white;
+                                color:red;
+                            }
+                           '''
+                           '''QPushButton{
+                                margin-top: 6px;
+                                margin-bottom: 6px;
+                                height: 30px;
+                                line-height: 28px;
+                                min-width: 72px;
+                                margin-left: 8px;
+                                margin-right: 8px;
+                                font-family: 黑体;
+                                padding: 0 8px;
+                                display: inline-block;
+                                font-size: 14px;
+                                border-radius: 4px;
+                                text-align: center;
+                                color: #fff !important;
+                                border: 1px solid #ca0c16 !important;
+                                background-color: #ca0c16 !important;
+                                cursor: pointer;
+                            }''')
+        self.setGeometry(0, 0, 700, 500)
         self.setWindowTitle('微信信息验证')
         self.setWindowIcon(QIcon('res/icon.png'))
+        self.pix = QPixmap("res/bg2.png")  # 蒙版
+        self.resize(self.pix.size())
+        self.setMask(self.pix.mask())
+
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
         self.setFixedSize(self.width(), self.height())
         self.center()
         self.show()
@@ -58,6 +115,26 @@ class MainWindow(QMainWindow):
             event.accept()
         else:
             event.ignore()
+
+    def paintEvent(self, event):  # 绘制窗口
+        painter=QPainter(self)
+        painter.drawPixmap(0,0,self.pix.width(),self.pix.height(), self.pix)
+
+    def mousePressEvent(self, event):
+        if event.button()==QtCore.Qt.LeftButton:
+            self.m_flag=True
+            self.m_Position=event.globalPos()-self.pos() #获取鼠标相对窗口的位置
+            event.accept()
+            self.setCursor(QCursor(QtCore.Qt.OpenHandCursor))  #更改鼠标图标
+
+    def mouseMoveEvent(self, QMouseEvent):
+        if QtCore.Qt.LeftButton and self.m_flag:
+            self.move(QMouseEvent.globalPos()-self.m_Position)#更改窗口位置
+            QMouseEvent.accept()
+
+    def mouseReleaseEvent(self, QMouseEvent):
+        self.m_flag=False
+        self.setCursor(QCursor(QtCore.Qt.ArrowCursor))
 
     def center(self):
         qr = self.frameGeometry()
