@@ -15,17 +15,16 @@ def get_request_params(biz, uin, offset, count, key, appmsg_token='', pass_ticke
             'key': key,
             'pass_ticket': pass_ticket,
             'appmsg_token': appmsg_token,
-            'x5': '0',
             'f': 'json'
         }
 
 
 def get_request_url():
-        return json.load(open('config/url.json', 'r', encoding='utf-8'))['url']
+        return json.load(open('../config/url.json', 'r', encoding='utf-8'))['url']
 
 
 def get_request_header():
-        return json.load(open('config/header.json', 'r', encoding='utf-8'))
+        return json.load(open('../config/header.json', 'r', encoding='utf-8'))
 
 def get_proxies():
-        return json.load(open('config/proxies.json', 'r', encoding='utf-8'))
+        return json.load(open('../config/proxies.json', 'r', encoding='utf-8'))

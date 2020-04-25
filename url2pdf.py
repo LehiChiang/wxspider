@@ -29,4 +29,4 @@ def load_from_url(url):
 
 if __name__ == "__main__":
     #load_from_file(config)
-    load_from_url('https://zhuanlan.zhihu.com/p/66048276')
+    load_from_url('http://mp.weixin.qq.com/s?__biz=MzA4MTY0NTYwMA==&amp;mid=2651182121&amp;idx=1&amp;sn=e12407837970ce236dab0f0700cd0794&amp;chksm=8460ad66b317247033a24d8ba8759ecd442dcbfb05864676dd69c0d81c1ec72108793f81fd8f&amp;scene=27#wechat_redirect')
