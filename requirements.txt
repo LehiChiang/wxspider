@@ -1,0 +1,4 @@
+pandas==0.24.2
+pdfkit==0.6.1
+requests==2.21.0
+beautifulsoup4==4.9.0
