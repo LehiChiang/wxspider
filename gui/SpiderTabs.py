@@ -22,6 +22,8 @@ class SpiderTab(QTabWidget):
         self.addTab(self.tab1, "Tab 1")
         self.addTab(self.tab2, "Tab 2")
 
+        self.setCurrentIndex(1)
+
         self.tab1UI()
         self.tab2UI()
 
@@ -46,10 +48,3 @@ class SpiderTab(QTabWidget):
 
         self.setTabText(1,'自动提取')
         self.tab2.setLayout(layout)
-
-#
-# if __name__ == '__main__':
-#     app=QApplication(sys.argv)
-#     demo=SpiderTab()
-#     demo.show()
-#     sys.exit(app.exec_())

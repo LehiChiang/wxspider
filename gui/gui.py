@@ -1,10 +1,12 @@
 import sys
 
 from PyQt5.QtWidgets import QApplication, QWidget, QToolTip, QPushButton, QMessageBox, QDesktopWidget, QHBoxLayout, \
-    QVBoxLayout, QLabel, QLineEdit, QTextEdit, QGridLayout, QMainWindow, QInputDialog
+    QVBoxLayout, QLineEdit,QMainWindow, QInputDialog
 from PyQt5.QtGui import QIcon, QFont
 
-from gui.SpiderTab import SpiderTab
+import SpiderTabs as st
+
+from parse import get_url_param
 from thread.SpiderThread import SpiderThread
 
 
@@ -31,7 +33,7 @@ class MainWindow(QMainWindow):
         hbox.addWidget(self.btn)
         hbox.addWidget(self.qbtn)
 
-        self.tab = SpiderTab()
+        self.tab = st.SpiderTab()
 
         vbox = QVBoxLayout()
         vbox.addWidget(self.tab)
@@ -66,6 +68,11 @@ class MainWindow(QMainWindow):
                                                "输入",
                                                "爬取全部输入‘all’，自定义页数输入页数，（例如：‘2’）：",
                                                QLineEdit.Normal, "")
+        if self.tab.urlEdit.text() != '':
+            param = get_url_param(self.tab.urlEdit.text())
+            self.tab.bizEdit.setText(param['__biz'])
+            self.tab.uinEdit.setText(param['uin'])
+            self.tab.keyEdit.setText(param['key'])
         if okPressed and text != '':
             self.thread = SpiderThread(biz=self.tab.bizEdit.text(),
                                     uin=self.tab.uinEdit.text(),
@@ -79,13 +86,14 @@ class MainWindow(QMainWindow):
 
     def spidercallback(self, msg):
         if msg == 'activate':
-            self.tab.btn.setEnabled(True)
+            self.btn.setEnabled(True)
             self.tab.bizEdit.setText(None)
             self.tab.uinEdit.setText(None)
             self.tab.keyEdit.setText(None)
-            QMessageBox.information(self.tab, "成功", "爬取数据并保存成功！", QMessageBox.Yes, QMessageBox.Yes)
+            self.tab.urlEdit.setText(None)
+            QMessageBox.information(self, "成功", "爬取数据并保存成功！", QMessageBox.Yes, QMessageBox.Yes)
         else:
-            QMessageBox.critical(self.tab, '错误', msg, QMessageBox.Abort)
+            QMessageBox.critical(self, '错误', msg, QMessageBox.Abort)
 
     def quitbtnclick(self):
         self.close()
