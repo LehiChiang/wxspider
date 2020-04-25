@@ -17,8 +17,6 @@ class MainWindow(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        QToolTip.setFont(QFont('SansSerif', 10))
-
         self.qbtn = QPushButton('退出', self)
         self.qbtn.clicked.connect(self.quitbtnclick)
         self.qbtn.resize(self.qbtn.sizeHint())
@@ -34,6 +32,8 @@ class MainWindow(QMainWindow):
         hbox.addWidget(self.qbtn)
 
         self.tab = st.SpiderTab()
+        self.tab.tab1.setStatusTip('手动添加请求参数爬取数据')
+        self.tab.tab2.setStatusTip('提供URL分析并爬取数据')
 
         vbox = QVBoxLayout()
         vbox.addWidget(self.tab)
@@ -41,10 +41,12 @@ class MainWindow(QMainWindow):
 
         panel = QWidget()
         panel.setLayout(vbox)
+        self.statusBar()
         self.setCentralWidget(panel)
-        self.setGeometry(300, 300, 300, 200)
+        self.setGeometry(0, 0, 400, 250)
         self.setWindowTitle('微信信息验证')
         self.setWindowIcon(QIcon('res/icon.png'))
+        self.setFixedSize(self.width(), self.height())
         self.center()
         self.show()
 
@@ -80,6 +82,7 @@ class MainWindow(QMainWindow):
                                     option=text)
             self.thread.signal.connect(self.spidercallback)
             self.thread.start()
+            self.setStatusTip('正在爬取，请等待........')
             self.btn.setEnabled(False)
         else:
             pass
@@ -92,6 +95,7 @@ class MainWindow(QMainWindow):
             self.tab.keyEdit.setText(None)
             self.tab.urlEdit.setText(None)
             QMessageBox.information(self, "成功", "爬取数据并保存成功！", QMessageBox.Yes, QMessageBox.Yes)
+            self.setStatusTip('成功！')
         else:
             QMessageBox.critical(self, '错误', msg, QMessageBox.Abort)
 
@@ -102,4 +106,4 @@ class MainWindow(QMainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MainWindow()
-    sys.exit(app.exec_()) 
+    sys.exit(app.exec_())
