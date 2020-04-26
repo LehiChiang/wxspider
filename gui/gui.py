@@ -3,10 +3,10 @@ import sys
 
 import qtawesome
 from PyQt5 import QtCore, QtGui
-from PyQt5.QtCore import QRect, QSize
+from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QDesktopWidget, QHBoxLayout, \
     QVBoxLayout, QLineEdit, QMainWindow, QInputDialog, QGridLayout, QToolButton, QFrame, QLabel
-from PyQt5.QtGui import QIcon, QCursor, QPainterPath, QPainter, QColor, QBrush, QPen
+from PyQt5.QtGui import QIcon, QCursor
 
 import SpiderTabs as st
 
