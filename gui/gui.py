@@ -6,11 +6,13 @@ from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QDesktopWidget, QHBoxLayout, \
     QVBoxLayout, QLineEdit, QMainWindow, QInputDialog, QGridLayout, QToolButton, QFrame, QLabel
-from PyQt5.QtGui import QIcon, QCursor
+from PyQt5.QtGui import QIcon, QCursor, QPalette, QLinearGradient, QColor, QBrush
 
 import SpiderTabs as st
 
 from CommomHelper import CommonHelper
+import CVTabs as cvtab
+import SpiderTabs as st
 from parse import get_url_param
 from thread.SpiderThread import SpiderThread
 
@@ -76,6 +78,11 @@ class MainWindowUI(QMainWindow):
         self.main_layout = QGridLayout()
         self.main_widget.setLayout(self.main_layout)
 
+        self.vbox = QVBoxLayout()
+        self.vbox.addLayout(self.top_right_group)
+        self.vbox.addWidget(st.SpiderTab())
+        self.vbox.addLayout(self.hbox)
+
         self.left_widget = QWidget()
         self.left_widget.setObjectName('left_widget')
         self.left_layout = QVBoxLayout()
@@ -83,50 +90,30 @@ class MainWindowUI(QMainWindow):
 
         self.right_widget = QWidget()
         self.right_widget.setObjectName('right_widget')
-        self.vbox = QVBoxLayout()
-        self.vbox.addLayout(self.top_right_group)
-        self.vbox.addWidget(self.tab)
-        self.vbox.addLayout(self.hbox)
         self.right_layout = self.vbox
         self.right_widget.setLayout(self.right_layout)
         self.right_widget.setContentsMargins(8,8,8,0)
 
-        self.main_layout.addWidget(self.left_widget,0,0,12,2) # 左侧部件在第0行第0列，占8行3列
-        self.main_layout.addWidget(self.right_widget,0,2,12,10) # 右侧部件在第0行第3列，占8行9列
+        self.main_layout.addWidget(self.left_widget,0,0,12,2)
+        self.main_layout.addWidget(self.right_widget,0,2,12,10)
 
 
-        self.left_label_1 = QLabel("每日推荐")
+        self.left_label_1 = QLabel("功能")
         self.left_label_1.setObjectName('left_label')
-        self.left_label_2 = QLabel("我的音乐")
+        self.left_label_2 = QLabel("设置")
         self.left_label_2.setObjectName('left_label')
-        self.left_label_3 = QLabel("联系与帮助")
-        self.left_label_3.setObjectName('left_label')
 
-        self.left_button_2 = QPushButton(qtawesome.icon('fa.sellsy',color='white'),"在线FM")
+        self.left_button_1 = QPushButton(qtawesome.icon('fa.sellsy',color='#6861ce'),"爬取公众号")
+        self.left_button_1.setIconSize(QSize(self.iconsizenum, self.iconsizenum))
+        self.left_button_1.setObjectName('left_button')
+        self.left_button_2 = QPushButton(qtawesome.icon('fa.star',color='#6861ce'), "目标检测")
+        self.left_button_2.setIconSize(QSize(self.iconsizenum, self.iconsizenum))
         self.left_button_2.setObjectName('left_button')
-        self.left_button_4 = QPushButton(qtawesome.icon('fa.home',color='white'),"本地音乐")
-        self.left_button_4.setObjectName('left_button')
-        self.left_button_5 = QPushButton(qtawesome.icon('fa.download',color='white'),"下载管理")
-        self.left_button_5.setObjectName('left_button')
-        self.left_button_6 = QPushButton(qtawesome.icon('fa.heart',color='white'),"我的收藏")
-        self.left_button_6.setObjectName('left_button')
-        self.left_button_7 = QPushButton(qtawesome.icon('fa.comment',color='white'),"反馈建议")
-        self.left_button_7.setObjectName('left_button')
-        self.left_button_8 = QPushButton(qtawesome.icon('fa.star',color='white'),"关注我们")
-        self.left_button_8.setObjectName('left_button')
-        self.left_button_9 = QPushButton(qtawesome.icon('fa.question',color='white'),"遇到问题")
-        self.left_button_9.setObjectName('left_button')
 
         self.left_layout.addWidget(self.left_label_1)
+        self.left_layout.addWidget(self.left_button_1)
         self.left_layout.addWidget(self.left_button_2)
         self.left_layout.addWidget(self.left_label_2)
-        self.left_layout.addWidget(self.left_button_4)
-        self.left_layout.addWidget(self.left_button_5)
-        self.left_layout.addWidget(self.left_button_6)
-        self.left_layout.addWidget(self.left_label_3)
-        self.left_layout.addWidget(self.left_button_7)
-        self.left_layout.addWidget(self.left_button_8)
-        self.left_layout.addWidget(self.left_button_9)
         self.left_layout.addStretch(1)
 
         self.main_layout.setSpacing(0)
