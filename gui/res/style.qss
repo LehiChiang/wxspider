@@ -1,0 +1,67 @@
+* {
+    padding: 5px
+}
+
+QStatusBar {
+    font-family: 幼圆;
+    font-size: 14px;
+}
+
+QLineEdit {
+    font: bold;
+    font-size: 17px;
+}
+
+QLabel {
+    font-size: 17px;
+}
+
+QTabWidget::pane {
+    border: none;
+}
+
+QTabWidget::tab-bar {
+    alignment: left;
+}
+
+QTabBar::tab {
+    margin-right: 1ex;
+    background: transparent;
+    color: white;
+    font: bold;
+    font-size: 15px;
+    font-family: 幼圆;
+    min-width: 25ex;
+    min-height: 8ex;
+    border-radius: 10px
+}
+
+QTabBar::tab:hover {
+    background: rgb(255, 255, 255, 100);
+}
+
+QTabBar::tab:selected {
+    border-color: white;
+    background: white;
+    color: red;
+}
+
+QPushButton {
+    margin-top: 6px;
+    margin-bottom: 6px;
+    height: 30px;
+    line-height: 28px;
+    min-width: 72px;
+    margin-left: 8px;
+    margin-right: 8px;
+    font-family: 黑体;
+    padding: 0 8px;
+    display: inline-block;
+    font-size: 14px;
+    border-radius: 4px;
+    text-align: center;
+    color: #fff !important;
+    border: 1px solid #ca0c16 !important;
+    background-color: #ca0c16 !important;
+    cursor: pointer;
+}
