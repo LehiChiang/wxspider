@@ -2,11 +2,6 @@
     padding: 5px
 }
 
-QStatusBar {
-    font-family: 幼圆;
-    font-size: 14px;
-}
-
 QLineEdit {
     font: bold;
     font-size: 17px;
@@ -27,7 +22,7 @@ QTabWidget::tab-bar {
 QTabBar::tab {
     margin-right: 1ex;
     background: transparent;
-    color: white;
+    color: red;
     font: bold;
     font-size: 15px;
     font-family: 幼圆;
@@ -41,7 +36,7 @@ QTabBar::tab:hover {
 }
 
 QTabBar::tab:selected {
-    border-color: white;
+    border-color: 1px solid red;
     background: white;
     color: red;
 }
@@ -64,4 +59,62 @@ QPushButton {
     border: 1px solid #ca0c16 !important;
     background-color: #ca0c16 !important;
     cursor: pointer;
+}
+
+QWidget#right_widget {
+    background: white;
+    border-top: 1px solid darkGray;
+    border-bottom: 1px solid darkGray;
+    border-right: 1px solid darkGray;
+    border-top-right-radius: 7px;
+    border-bottom-right-radius: 7px;
+}
+
+QLabel#right_lable {
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+QLabel#left_label{
+        border:none;
+        border-bottom:1px solid white;
+        font-size:18px;
+        font-weight:700;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+QToolButton#left_close {
+    background: #F76677;
+    border-radius: 10px;
+}
+
+QToolButton#left_close:hover {
+    background: red;
+}
+
+QToolButton#left_visit {
+    background: #F7D674;
+    border-radius: 10px;
+}
+
+QToolButton#left_visit:hover {
+    background: yellow;
+}
+
+QToolButton#left_mini {
+    background: #6DDF6D;
+    border-radius: 10px;
+}
+
+QToolButton#left_mini:hover {
+    background: green;
+}
+QWidget#left_widget{
+    background:gray;
+    border-top: 1px solid darkGray;
+    border-bottom: 1px solid darkGray;
+    border-left: 1px solid darkGray;
+    border-top-left-radius:7px;
+    border-bottom-left-radius:7px;
 }

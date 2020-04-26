@@ -7,5 +7,5 @@ class CommonHelper:
 
     @staticmethod
     def readQss(style):
-        with open(style, 'r') as f:
+        with open( style , 'r',  encoding='UTF-8') as f:
             return f.read()

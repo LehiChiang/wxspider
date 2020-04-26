@@ -1,111 +1,143 @@
+import math
 import sys
 
-from PyQt5 import QtCore
+import qtawesome
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtCore import QRect, QSize
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QDesktopWidget, QHBoxLayout, \
-    QVBoxLayout, QLineEdit, QMainWindow, QInputDialog
-from PyQt5.QtGui import QIcon, QPixmap, QPainter, QCursor
+    QVBoxLayout, QLineEdit, QMainWindow, QInputDialog, QGridLayout, QToolButton, QFrame, QLabel
+from PyQt5.QtGui import QIcon, QCursor, QPainterPath, QPainter, QColor, QBrush, QPen
 
 import SpiderTabs as st
 
+from CommomHelper import CommonHelper
 from parse import get_url_param
 from thread.SpiderThread import SpiderThread
 
 
-class MainWindow(QMainWindow):
+class MainWindowUI(QMainWindow):
 
     def __init__(self):
         super().__init__()
+        self.iconsizenum = 25
+        self.widthRatio = 0.65
+        self.heightRatio = 0.7
+        desktop = QApplication.desktop()
+        self.winWidth = desktop.width()
+        self.winHeight = desktop.height()
+        self.screenWidth = self.winWidth * self.widthRatio
+        self.screenHeight = self.winHeight * self.heightRatio
         self.initUI()
 
     def initUI(self):
-        self.qbtn = QPushButton('退出', self)
-        self.qbtn.clicked.connect(self.quitbtnclick)
-        self.qbtn.resize(self.qbtn.sizeHint())
 
         self.btn = QPushButton('连接', self)
         self.btn.setToolTip('点击连接')
         self.btn.resize(self.btn.sizeHint())
         self.btn.clicked.connect(self.spiderbtnclick)
 
-        hbox = QHBoxLayout()
-        hbox.addStretch(1)
-        hbox.addWidget(self.btn)
-        hbox.addWidget(self.qbtn)
+        self.leftclose = QToolButton()
+        self.leftclose.setIcon(qtawesome.icon('fa.times', color='white'))
+        self.leftclose.setIconSize(QSize(self.iconsizenum, self.iconsizenum))
+        self.leftclose.setObjectName('left_close')
+        self.leftclose.setToolTip('关闭程序')
+        self.leftclose.setFixedSize(self.iconsizenum, self.iconsizenum)
+        self.leftclose.clicked.connect(self.quitbtnclick)
+
+        self.leftvisit = QToolButton()
+        self.leftvisit.setIcon(qtawesome.icon('fa5s.window-maximize', color='white'))
+        self.leftvisit.setIconSize(QSize(self.iconsizenum, self.iconsizenum))
+        self.leftvisit.setObjectName('left_visit')
+        self.leftvisit.setToolTip('最大化界面')
+        self.leftvisit.setFixedSize(self.iconsizenum, self.iconsizenum)
+        self.leftvisit.clicked.connect(self.windowMaximize)
+
+        self.leftmini = QToolButton()
+        self.leftmini.setIcon(qtawesome.icon('fa5s.window-minimize', color='white'))
+        self.leftmini.setIconSize(QSize(self.iconsizenum, self.iconsizenum))
+        self.leftmini.setObjectName('left_mini')
+        self.leftmini.setToolTip('最小化界面')
+        self.leftmini.setFixedSize(self.iconsizenum, self.iconsizenum)
+        self.leftmini.clicked.connect(self.windowMinimize)
+
+        self.hbox = QHBoxLayout()
+        self.hbox.addStretch(1)
+        self.hbox.addWidget(self.btn)
+
+        self.top_right_group = QHBoxLayout()
+        self.top_right_group.addStretch(1)
+        self.top_right_group.addWidget(self.leftmini)
+        self.top_right_group.addWidget(self.leftvisit)
+        self.top_right_group.addWidget(self.leftclose)
 
         self.tab = st.SpiderTab()
-        self.tab.tab1.setStatusTip('手动添加请求参数爬取数据')
-        self.tab.tab2.setStatusTip('提供URL分析并爬取数据')
 
-        vbox = QVBoxLayout()
-        vbox.addWidget(self.tab)
-        vbox.addLayout(hbox)
+        self.main_widget = QFrame()
+        self.main_layout = QGridLayout()
+        self.main_widget.setLayout(self.main_layout)
 
-        panel = QWidget()
-        panel.setLayout(vbox)
-        panel.setContentsMargins(8,35,8,0)
-        self.statusBar()
-        self.setCentralWidget(panel)
-        self.setStyleSheet('*{padding:5px}'
-                           'QStatusBar{font-family:幼圆;font-size: 14px;}'
-                           'QLineEdit{font:bold;font-size: 17px;}'
-                           'QLabel{font-size: 17px;}'
-                           '''
-                           QTabWidget::pane{
-                                border:none;
-                            }
-                            QTabWidget::tab-bar{
-                                alignment:left;
-                            }
-                           QTabBar::tab{
-                                margin-right:1ex;
-                                background:transparent;
-                                color:white;
-                                font:bold;
-                                font-size:15px;
-                                font-family:幼圆;
-                                min-width:25ex;
-                                min-height:8ex;
-                                border-radius:10px
-                            }
-                            QTabBar::tab:hover{
-                                background:rgb(255, 255, 255, 100);
-                            }
-                            QTabBar::tab:selected{
-                                border-color: white;
-                                background:white;
-                                color:red;
-                            }
-                           '''
-                           '''QPushButton{
-                                margin-top: 6px;
-                                margin-bottom: 6px;
-                                height: 30px;
-                                line-height: 28px;
-                                min-width: 72px;
-                                margin-left: 8px;
-                                margin-right: 8px;
-                                font-family: 黑体;
-                                padding: 0 8px;
-                                display: inline-block;
-                                font-size: 14px;
-                                border-radius: 4px;
-                                text-align: center;
-                                color: #fff !important;
-                                border: 1px solid #ca0c16 !important;
-                                background-color: #ca0c16 !important;
-                                cursor: pointer;
-                            }''')
-        self.setGeometry(0, 0, 700, 500)
+        self.left_widget = QWidget()
+        self.left_widget.setObjectName('left_widget')
+        self.left_layout = QVBoxLayout()
+        self.left_widget.setLayout(self.left_layout)
+
+        self.right_widget = QWidget()
+        self.right_widget.setObjectName('right_widget')
+        self.vbox = QVBoxLayout()
+        self.vbox.addLayout(self.top_right_group)
+        self.vbox.addWidget(self.tab)
+        self.vbox.addLayout(self.hbox)
+        self.right_layout = self.vbox
+        self.right_widget.setLayout(self.right_layout)
+        self.right_widget.setContentsMargins(8,8,8,0)
+
+        self.main_layout.addWidget(self.left_widget,0,0,12,2) # 左侧部件在第0行第0列，占8行3列
+        self.main_layout.addWidget(self.right_widget,0,2,12,10) # 右侧部件在第0行第3列，占8行9列
+
+
+        self.left_label_1 = QLabel("每日推荐")
+        self.left_label_1.setObjectName('left_label')
+        self.left_label_2 = QLabel("我的音乐")
+        self.left_label_2.setObjectName('left_label')
+        self.left_label_3 = QLabel("联系与帮助")
+        self.left_label_3.setObjectName('left_label')
+
+        self.left_button_2 = QPushButton(qtawesome.icon('fa.sellsy',color='white'),"在线FM")
+        self.left_button_2.setObjectName('left_button')
+        self.left_button_4 = QPushButton(qtawesome.icon('fa.home',color='white'),"本地音乐")
+        self.left_button_4.setObjectName('left_button')
+        self.left_button_5 = QPushButton(qtawesome.icon('fa.download',color='white'),"下载管理")
+        self.left_button_5.setObjectName('left_button')
+        self.left_button_6 = QPushButton(qtawesome.icon('fa.heart',color='white'),"我的收藏")
+        self.left_button_6.setObjectName('left_button')
+        self.left_button_7 = QPushButton(qtawesome.icon('fa.comment',color='white'),"反馈建议")
+        self.left_button_7.setObjectName('left_button')
+        self.left_button_8 = QPushButton(qtawesome.icon('fa.star',color='white'),"关注我们")
+        self.left_button_8.setObjectName('left_button')
+        self.left_button_9 = QPushButton(qtawesome.icon('fa.question',color='white'),"遇到问题")
+        self.left_button_9.setObjectName('left_button')
+
+        self.left_layout.addWidget(self.left_label_1)
+        self.left_layout.addWidget(self.left_button_2)
+        self.left_layout.addWidget(self.left_label_2)
+        self.left_layout.addWidget(self.left_button_4)
+        self.left_layout.addWidget(self.left_button_5)
+        self.left_layout.addWidget(self.left_button_6)
+        self.left_layout.addWidget(self.left_label_3)
+        self.left_layout.addWidget(self.left_button_7)
+        self.left_layout.addWidget(self.left_button_8)
+        self.left_layout.addWidget(self.left_button_9)
+        self.left_layout.addStretch(1)
+
+        self.main_layout.setSpacing(0)
+        self.setCentralWidget(self.main_widget)
+        self.centralWidget().layout().setContentsMargins(0, 0, 0, 0)
+        self.resize(self.screenWidth, self.screenHeight)
         self.setWindowTitle('微信信息验证')
         self.setWindowIcon(QIcon('res/icon.png'))
-        self.pix = QPixmap("res/bg2.png")  # 蒙版
-        self.resize(self.pix.size())
-        self.setMask(self.pix.mask())
-
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint | QtCore.Qt.WindowStaysOnTopHint)
-        self.setFixedSize(self.width(), self.height())
+        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.center()
-        self.show()
 
     def closeEvent(self, event):
         reply = QMessageBox.question(self, '消息',
@@ -116,9 +148,14 @@ class MainWindow(QMainWindow):
         else:
             event.ignore()
 
-    def paintEvent(self, event):  # 绘制窗口
-        painter=QPainter(self)
-        painter.drawPixmap(0,0,self.pix.width(),self.pix.height(), self.pix)
+    def windowMaximize(self):
+        if self.windowState() == QtCore.Qt.WindowNoState:
+            self.setWindowState(QtCore.Qt.WindowMaximized)
+        elif self.windowState() == QtCore.Qt.WindowMaximized:
+            self.setWindowState(QtCore.Qt.WindowNoState)
+
+    def windowMinimize(self):
+        self.setWindowState(QtCore.Qt.WindowMinimized)
 
     def mousePressEvent(self, event):
         if event.button()==QtCore.Qt.LeftButton:
@@ -136,11 +173,20 @@ class MainWindow(QMainWindow):
         self.m_flag=False
         self.setCursor(QCursor(QtCore.Qt.ArrowCursor))
 
+    def mouseDoubleClickEvent(self, a0: QtGui.QMouseEvent):
+        self.windowMaximize()
+
     def center(self):
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
+
+    def quitbtnclick(self):
+        self.close()
+
+
+class MainWindowService(MainWindowUI):
 
     def spiderbtnclick(self):
         text, okPressed = QInputDialog.getText(self,
@@ -154,12 +200,11 @@ class MainWindow(QMainWindow):
             self.tab.keyEdit.setText(param['key'])
         if okPressed and text != '':
             self.thread = SpiderThread(biz=self.tab.bizEdit.text(),
-                                    uin=self.tab.uinEdit.text(),
-                                    key=self.tab.keyEdit.text(),
-                                    option=text)
+                                       uin=self.tab.uinEdit.text(),
+                                       key=self.tab.keyEdit.text(),
+                                       option=text)
             self.thread.signal.connect(self.spidercallback)
             self.thread.start()
-            self.setStatusTip('正在爬取，请等待........')
             self.btn.setEnabled(False)
         else:
             pass
@@ -172,15 +217,14 @@ class MainWindow(QMainWindow):
             self.tab.keyEdit.setText(None)
             self.tab.urlEdit.setText(None)
             QMessageBox.information(self, "成功", "爬取数据并保存成功！", QMessageBox.Yes, QMessageBox.Yes)
-            self.setStatusTip('成功！')
         else:
             QMessageBox.critical(self, '错误', msg, QMessageBox.Abort)
 
-    def quitbtnclick(self):
-        self.close()
-
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = MainWindow()
+    win = MainWindowService()
+    styleFile = 'res/style.qss'
+    qssStyle = CommonHelper.readQss(styleFile)
+    win.setStyleSheet(qssStyle)
+    win.show()
     sys.exit(app.exec_())

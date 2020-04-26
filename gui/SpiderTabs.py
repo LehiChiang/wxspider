@@ -1,6 +1,36 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLabel,QFormLayout, QLineEdit, QTabWidget, QWidget, QGridLayout
+
+
+class TabBar(QtWidgets.QTabBar):
+
+    def tabSizeHint(self, index):
+        s = QtWidgets.QTabBar.tabSizeHint(self, index)
+        s.transpose()
+        return s
+
+    def paintEvent(self, event):
+        painter = QtWidgets.QStylePainter(self)
+        opt = QtWidgets.QStyleOptionTab()
+
+        for i in range(self.count()):
+            self.initStyleOption(opt, i)
+            painter.drawControl(QtWidgets.QStyle.CE_TabBarTabShape, opt)
+            painter.save()
+
+            s = opt.rect.size()
+            s.transpose()
+            r = QtCore.QRect(QtCore.QPoint(), s)
+            r.moveCenter(opt.rect.center())
+            opt.rect = r
+
+            c = self.tabRect(i).center()
+            painter.translate(c)
+            painter.rotate(90)
+            painter.translate(-c)
+            painter.drawControl(QtWidgets.QStyle.CE_TabBarTabLabel, opt);
+            painter.restore()
 
 
 class SpiderTab(QTabWidget):
@@ -40,16 +70,14 @@ class SpiderTab(QTabWidget):
         self.urlEdit.setClearButtonEnabled(True)
         self.urlEdit.setFont(font)
 
+        # self.setTabBar(TabBar(self))
+        # self.setTabPosition(QTabWidget.West)
+
         self.addTab(self.tab1, "Tab 1")
         self.addTab(self.tab2, "Tab 2")
 
         self.setCurrentIndex(1)
 
-
-        # optab = QtWidgets.QGraphicsOpacityEffect()
-        # optab.setOpacity(0.3)
-        # self.tab1.setGraphicsEffect(optab)
-        # self.tab2.setGraphicsEffect(optab)
         optitle = QtWidgets.QGraphicsOpacityEffect()
         optitle.setOpacity(0.7)
         self.setGraphicsEffect(optitle)
@@ -77,3 +105,5 @@ class SpiderTab(QTabWidget):
 
         self.setTabText(1,'自动提取')
         self.tab2.setLayout(layout)
+
+
