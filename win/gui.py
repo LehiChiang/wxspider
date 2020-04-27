@@ -9,9 +9,9 @@ from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox, QDesktopWidget, 
 from PyQt5.QtGui import QIcon, QCursor
 
 from CommomHelper import CommonHelper
-from win.CVTabs import ObjectDetectionTab
+from win.CV.CVTabs import ObjectDetectionTab
 from win.LeftItemList import LeftListWidget
-from win.SpiderTabs import SpiderTab
+from win.WebSpider.SpiderTabs import SpiderTab
 
 
 class MainWindowUI(QMainWindow):
