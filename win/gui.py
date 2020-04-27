@@ -1,20 +1,17 @@
-import math
 import sys
 
 import qtawesome
 from PyQt5 import QtCore, QtGui
 from PyQt5.QtCore import QSize
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox, QDesktopWidget, QHBoxLayout, \
-    QVBoxLayout, QLineEdit, QMainWindow, QInputDialog, QGridLayout, QToolButton, QFrame, QLabel
-from PyQt5.QtGui import QIcon, QCursor, QPalette, QLinearGradient, QColor, QBrush
-
-import SpiderTabs as st
+from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox, QDesktopWidget, QHBoxLayout, \
+    QVBoxLayout, QMainWindow, QGridLayout, QToolButton, QFrame, QLabel, \
+    QStackedWidget
+from PyQt5.QtGui import QIcon, QCursor
 
 from CommomHelper import CommonHelper
-import CVTabs as cvtab
-import SpiderTabs as st
-from parse import get_url_param
-from thread.SpiderThread import SpiderThread
+from win.CVTabs import ObjectDetectionTab
+from win.LeftItemList import LeftListWidget
+from win.SpiderTabs import SpiderTab
 
 
 class MainWindowUI(QMainWindow):
@@ -32,11 +29,6 @@ class MainWindowUI(QMainWindow):
         self.initUI()
 
     def initUI(self):
-
-        self.btn = QPushButton('连接', self)
-        self.btn.setToolTip('点击连接')
-        self.btn.resize(self.btn.sizeHint())
-        self.btn.clicked.connect(self.spiderbtnclick)
 
         self.leftclose = QToolButton()
         self.leftclose.setIcon(qtawesome.icon('fa.times', color='white'))
@@ -62,60 +54,62 @@ class MainWindowUI(QMainWindow):
         self.leftmini.setFixedSize(self.iconsizenum, self.iconsizenum)
         self.leftmini.clicked.connect(self.windowMinimize)
 
-        self.hbox = QHBoxLayout()
-        self.hbox.addStretch(1)
-        self.hbox.addWidget(self.btn)
-
+        #右侧上方三个按钮
         self.top_right_group = QHBoxLayout()
         self.top_right_group.addStretch(1)
         self.top_right_group.addWidget(self.leftmini)
         self.top_right_group.addWidget(self.leftvisit)
         self.top_right_group.addWidget(self.leftclose)
 
-        self.tab = st.SpiderTab()
-
+        #定义最主界面
         self.main_widget = QFrame()
         self.main_layout = QGridLayout()
         self.main_widget.setLayout(self.main_layout)
 
+        #右侧下方的StackWidget
+        self.stack=QStackedWidget(self)
+        self.spidertab = SpiderTab()
+        self.cvtab = ObjectDetectionTab()
+        self.demotab = QWidget()
+        self.stack.addWidget(self.spidertab)
+        self.stack.addWidget(self.cvtab)
+
+        #右侧全部
         self.vbox = QVBoxLayout()
         self.vbox.addLayout(self.top_right_group)
-        self.vbox.addWidget(st.SpiderTab())
-        self.vbox.addLayout(self.hbox)
+        self.vbox.addWidget(self.stack)
 
+        #定义左侧
         self.left_widget = QWidget()
         self.left_widget.setObjectName('left_widget')
         self.left_layout = QVBoxLayout()
         self.left_widget.setLayout(self.left_layout)
 
+        #定义右侧
         self.right_widget = QWidget()
         self.right_widget.setObjectName('right_widget')
         self.right_layout = self.vbox
         self.right_widget.setLayout(self.right_layout)
         self.right_widget.setContentsMargins(8,8,8,0)
 
+        #将左侧和右侧加到最主窗体中
         self.main_layout.addWidget(self.left_widget,0,0,12,2)
         self.main_layout.addWidget(self.right_widget,0,2,12,10)
 
-
+        #左侧的按钮们
         self.left_label_1 = QLabel("功能")
         self.left_label_1.setObjectName('left_label')
         self.left_label_2 = QLabel("设置")
         self.left_label_2.setObjectName('left_label')
-
-        self.left_button_1 = QPushButton(qtawesome.icon('fa.sellsy',color='#6861ce'),"爬取公众号")
-        self.left_button_1.setIconSize(QSize(self.iconsizenum, self.iconsizenum))
-        self.left_button_1.setObjectName('left_button')
-        self.left_button_2 = QPushButton(qtawesome.icon('fa.star',color='#6861ce'), "目标检测")
-        self.left_button_2.setIconSize(QSize(self.iconsizenum, self.iconsizenum))
-        self.left_button_2.setObjectName('left_button')
-
+        self.leftlist=LeftListWidget()
+        self.leftlist.setObjectName('fun')
+        self.leftlist.currentRowChanged.connect(self.display)
         self.left_layout.addWidget(self.left_label_1)
-        self.left_layout.addWidget(self.left_button_1)
-        self.left_layout.addWidget(self.left_button_2)
+        self.left_layout.addWidget(self.leftlist, alignment=QtCore.Qt.AlignHCenter)
         self.left_layout.addWidget(self.left_label_2)
         self.left_layout.addStretch(1)
 
+        #最主窗体的设置
         self.main_layout.setSpacing(0)
         self.setCentralWidget(self.main_widget)
         self.centralWidget().layout().setContentsMargins(0, 0, 0, 0)
@@ -125,6 +119,9 @@ class MainWindowUI(QMainWindow):
         self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.center()
+
+    def display(self,i):
+        self.stack.setCurrentIndex(i)
 
     def closeEvent(self, event):
         reply = QMessageBox.question(self, '消息',
@@ -173,43 +170,9 @@ class MainWindowUI(QMainWindow):
         self.close()
 
 
-class MainWindowService(MainWindowUI):
-
-    def spiderbtnclick(self):
-        text, okPressed = QInputDialog.getText(self,
-                                               "输入",
-                                               "爬取全部输入‘all’，自定义页数输入页数，（例如：‘2’）：",
-                                               QLineEdit.Normal, "")
-        if self.tab.urlEdit.text() != '':
-            param = get_url_param(self.tab.urlEdit.text())
-            self.tab.bizEdit.setText(param['__biz'])
-            self.tab.uinEdit.setText(param['uin'])
-            self.tab.keyEdit.setText(param['key'])
-        if okPressed and text != '':
-            self.thread = SpiderThread(biz=self.tab.bizEdit.text(),
-                                       uin=self.tab.uinEdit.text(),
-                                       key=self.tab.keyEdit.text(),
-                                       option=text)
-            self.thread.signal.connect(self.spidercallback)
-            self.thread.start()
-            self.btn.setEnabled(False)
-        else:
-            pass
-
-    def spidercallback(self, msg):
-        if msg == 'activate':
-            self.btn.setEnabled(True)
-            self.tab.bizEdit.setText(None)
-            self.tab.uinEdit.setText(None)
-            self.tab.keyEdit.setText(None)
-            self.tab.urlEdit.setText(None)
-            QMessageBox.information(self, "成功", "爬取数据并保存成功！", QMessageBox.Yes, QMessageBox.Yes)
-        else:
-            QMessageBox.critical(self, '错误', msg, QMessageBox.Abort)
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    win = MainWindowService()
+    win = MainWindowUI()
     styleFile = 'res/style.qss'
     qssStyle = CommonHelper.readQss(styleFile)
     win.setStyleSheet(qssStyle)

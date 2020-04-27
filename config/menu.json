@@ -1,0 +1,14 @@
+{
+  "menu": [
+    {
+      "icon": "fa.sellsy",
+      "title": "爬取公众号",
+      "subtitle": ""
+    },
+    {
+      "icon": "fa.star",
+      "title": "目标检测",
+      "subtitle": "哈哈哈哈哈"
+    }
+  ]
+}

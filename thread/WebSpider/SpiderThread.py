@@ -1,4 +1,3 @@
-import sys
 import traceback
 
 from PyQt5 import QtCore
@@ -7,7 +6,7 @@ import os
 import time
 import pandas as pd
 
-from spider import PassageSpider
+from service.WebSpider.spider import PassageSpider
 
 class SpiderThread(QtCore.QThread):
 
