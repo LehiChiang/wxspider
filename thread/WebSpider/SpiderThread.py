@@ -10,7 +10,9 @@ from service.WebSpider.spider import PassageSpider
 
 class SpiderThread(QtCore.QThread):
 
-    signal = pyqtSignal(str)
+    signal = pyqtSignal(object)
+
+    msg = {}
 
     def __init__(self, biz, uin, key, option):
         super(SpiderThread, self).__init__()
@@ -53,9 +55,12 @@ class SpiderThread(QtCore.QThread):
                     time.sleep(spider.sleeptime)
 
             end = time.clock()
-            print('Running time: %s Seconds'%(end-start))
+
         except Exception:
             e = str(traceback.format_exc())
-            self.signal.emit(e)
+            self.msg['error'] = e
+            self.msg['state'] = 'fail'
 
-        self.signal.emit('activate')
+        self.msg['time'] = end-start
+        self.msg['state'] = 'success'
+        self.signal.emit(self.msg)

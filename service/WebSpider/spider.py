@@ -41,7 +41,6 @@ class PassageSpider:
                               params=reparams.get_request_params(self.biz, self.uin, self.offset, self.count, self.key),
                               verify=False,)
         print('URL: ', result.url)
-        print('status_code: ', result.status_code)
         html = json.loads(result.text)
         self.parse_json(html, getall, filename)
 
@@ -71,7 +70,7 @@ class PassageSpider:
             eleinums = item['app_msg_ext_info']['multi_app_msg_item_list']
 
             if title_ != "":
-                print(id, title_, content_url_, time_)
+                #print(id, title_, content_url_, time_)
                 df_insert = pd.DataFrame({'id':[id],
                                           'title':[title_],
                                           'url':[content_url_],
@@ -88,7 +87,7 @@ class PassageSpider:
                         copyright_ = ele['copyright_stat']
                     except:
                         copyright_ = ''
-                    print(id, title_, content_url_, time_)
+                    #print(id, title_, content_url_, time_)
                     df_insert = pd.DataFrame({'id': [id],
                                               'title': [title_],
                                               'url': [content_url_],

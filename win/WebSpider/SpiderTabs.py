@@ -127,15 +127,15 @@ class SpiderTab(QWidget):
             pass
 
     def spidercallback(self, msg):
-        if msg == 'activate':
+        if msg['state'] == 'success':
             self.btn.setEnabled(True)
             self.statusInfo.setText(None)
             self.tab.bizEdit.setText(None)
             self.tab.uinEdit.setText(None)
             self.tab.keyEdit.setText(None)
             self.tab.urlEdit.setText(None)
-            QMessageBox.information(self, "成功", "爬取数据并保存成功！", QMessageBox.Yes, QMessageBox.Yes)
-        else:
+            QMessageBox.information(self, "成功", "爬取数据并保存成功！共耗时%.2fs" % msg['time'], QMessageBox.Yes, QMessageBox.Yes)
+        elif msg['error'] != '':
             QMessageBox.critical(self, '错误', msg, QMessageBox.Abort)
 
 
