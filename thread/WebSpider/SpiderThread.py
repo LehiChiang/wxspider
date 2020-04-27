@@ -10,16 +10,18 @@ from service.WebSpider.spider import PassageSpider
 
 class SpiderThread(QtCore.QThread):
 
-    signal = pyqtSignal(object)
+    signal = pyqtSignal(str)
 
     msg = {}
 
-    def __init__(self, biz, uin, key, option):
+    def __init__(self, biz, uin, key, option, filename, sleeptime):
         super(SpiderThread, self).__init__()
         self.biz = biz
         self.uin = uin
         self.key = key
         self.option = option
+        self.filename = filename
+        self.sleeptime = sleeptime
 
     def __del__(self):
         self.wait()
@@ -27,7 +29,7 @@ class SpiderThread(QtCore.QThread):
     def run(self):
         try:
             option = self.option
-            filename = 'datastmp.csv'
+            filename = self.filename
 
             titledata = pd.DataFrame(columns=['id', 'title', 'url', 'datetime', 'copyright'])
             titledata.to_csv(os.path.join('../data', filename), encoding='utf_8_sig', index=False)
@@ -38,7 +40,8 @@ class SpiderThread(QtCore.QThread):
                                        count=10,
                                        biz=self.biz,
                                        uin=self.uin,
-                                       key=self.key)
+                                       key=self.key,
+                                       sleeptime=self.sleeptime)
                 spider.request_url(getall=True, filename=filename)
                 spider.save_xls(filename=filename)
             else:
@@ -47,20 +50,15 @@ class SpiderThread(QtCore.QThread):
                                        count=10,
                                        biz=self.biz,
                                        uin=self.uin,
-                                       key=self.key)
+                                       key=self.key,
+                                       sleeptime=self.sleeptime)
                 for i in range(pages):
                     spider.request_url(getall=False, filename=filename)
                     spider.offset += spider.count
                     spider.save_xls(filename=filename)
                     time.sleep(spider.sleeptime)
-
             end = time.clock()
-
         except Exception:
             e = str(traceback.format_exc())
-            self.msg['error'] = e
-            self.msg['state'] = 'fail'
+            self.signal.emit(e)
 
-        self.msg['time'] = end-start
-        self.msg['state'] = 'success'
-        self.signal.emit(self.msg)

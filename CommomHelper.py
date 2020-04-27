@@ -15,3 +15,7 @@ class CommonHelper:
     @staticmethod
     def load_json(path):
         return json.load(open(path, 'r', encoding='utf-8'))
+
+    @staticmethod
+    def load_setting(path):
+        return json.load(open(path, 'r', encoding='utf-8'))

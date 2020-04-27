@@ -1,12 +1,89 @@
+import json
 import sys
+import re
 
-from PyQt5 import QtWidgets
-from PyQt5.QtGui import QFont
+import qtawesome
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtCore import QRegExp
+from PyQt5.QtGui import QFont, QIntValidator, QRegExpValidator
 from PyQt5.QtWidgets import QLabel, QFormLayout, QLineEdit, QTabWidget, QWidget, QApplication, QVBoxLayout, \
-    QPushButton, QHBoxLayout, QInputDialog, QMessageBox
+    QPushButton, QHBoxLayout, QInputDialog, QMessageBox, QGridLayout
 
+from CommomHelper import CommonHelper
 from service.WebSpider.parse import get_url_param
+from thread.WebSpider.SpiderSaveThread import SpiderSaveThread
 from thread.WebSpider.SpiderThread import SpiderThread
+
+
+class SpiderSettingTab(QWidget):
+    def __init__(self):
+        super(SpiderSettingTab, self).__init__()
+        self.flg=True
+        self.setupUI()
+
+    def setupUI(self):
+        grid = QVBoxLayout()
+        self.label1 = QLabel('基本设置')
+        self.label1.setObjectName('content')
+        self.label2 = QLabel('高级设置')
+        self.label2.setObjectName('content')
+
+        self.firstBlock_layout = QFormLayout()
+        self.firstBlock_filename_label = QLabel('文件名')
+        self.firstBlock_filename_label.setObjectName('content')
+        self.firstBlock_filename_input = QLineEdit()
+        self.firstBlock_filename_input.setClearButtonEnabled(True)
+        self.firstBlock_layout.addRow(self.firstBlock_filename_label, self.firstBlock_filename_input)
+        self.firstBlock_waittime_label = QLabel('等待时间')
+        self.firstBlock_waittime_label.setObjectName('content')
+        self.firstBlock_waittime_input = QLineEdit()
+        self.firstBlock_waittime_input.setClearButtonEnabled(True)
+        self.firstBlock_layout.addRow(self.firstBlock_waittime_label, self.firstBlock_waittime_input)
+
+        hbox1 = QHBoxLayout()
+        hbox1.addStretch(1)
+        hbox1.addWidget(self.label1, 1, alignment=QtCore.Qt.AlignTop)
+        hbox1.addLayout(self.firstBlock_layout, 2)
+        hbox1.addStretch(1)
+
+        self.save_btn = QPushButton('保存更改')
+        self.save_btn.setFixedWidth(100)
+        self.save_btn.resize(self.save_btn.sizeHint())
+        self.save_btn.clicked.connect(self.savebtnclick)
+
+        grid.addLayout(hbox1)
+        grid.addWidget(self.save_btn, alignment=QtCore.Qt.AlignCenter)
+        grid.addStretch(1)
+        self.setLayout(grid)
+        self.readSetting()
+
+
+    def jobCode(self, txtstr, regex):
+        result=re.search(regex, txtstr)
+        if result.group()==txtstr:
+            return self.flg == True
+        else:
+            return self.flg==False
+
+    def savebtnclick(self):
+        filename = self.firstBlock_filename_input.text()
+        sleeptime = self.firstBlock_waittime_input.text()
+        setting = {"filename":filename,
+                   "sleeptime":sleeptime}
+        self.thread = SpiderSaveThread(setting=setting)
+        self.thread.signal.connect(self.savebtnclickcallback)
+        self.thread.start()
+
+    def savebtnclickcallback(self, msg):
+        if msg == None:
+            QMessageBox.information(self, "成功", "设置保存成功！", QMessageBox.Yes, QMessageBox.Yes)
+        else:
+            QMessageBox.critical(self, '错误', msg, QMessageBox.Abort)
+
+    def readSetting(self):
+        setting = CommonHelper.load_setting('../config/wxspider_setting.cm')
+        self.firstBlock_waittime_input.setText(setting['sleeptime'])
+        self.firstBlock_filename_input.setText(setting['filename'])
 
 
 class SpiderTabs(QTabWidget):
@@ -15,6 +92,7 @@ class SpiderTabs(QTabWidget):
 
         self.tab1 = QWidget()
         self.tab2 = QWidget()
+        self.tab3 = SpiderSettingTab()
 
         self.biz = QLabel('biz')
         self.biz.setObjectName('content')
@@ -40,6 +118,7 @@ class SpiderTabs(QTabWidget):
 
         self.addTab(self.tab1, "Tab 1")
         self.addTab(self.tab2, "Tab 2")
+        self.addTab(self.tab3, 'Tab 3')
 
         self.setCurrentIndex(1)
 
@@ -48,6 +127,8 @@ class SpiderTabs(QTabWidget):
         self.setGraphicsEffect(optitle)
         self.tab1UI()
         self.tab2UI()
+        self.setTabToolTip(2, '爬取公众号的参数设置')
+        self.setTabText(2, '设置')
 
     def tab1UI(self):
         layout = QFormLayout()
@@ -109,6 +190,12 @@ class SpiderTab(QWidget):
                                                "输入",
                                                "爬取全部输入‘all’，自定义页数输入页数，（例如：‘2’）：",
                                                QLineEdit.Normal, "")
+        filename_option = self.tab.tab3.firstBlock_filename_input.text()
+        waittime_option = self.tab.tab3.firstBlock_waittime_input.text()
+        if filename_option == '':
+            filename_option = 'datastmp.csv'
+        if waittime_option == '':
+            waittime_option = 10
         if self.tab.urlEdit.text() != '':
             param = get_url_param(self.tab.urlEdit.text())
             self.tab.bizEdit.setText(param['__biz'])
@@ -118,7 +205,9 @@ class SpiderTab(QWidget):
             self.thread = SpiderThread(biz=self.tab.bizEdit.text(),
                                        uin=self.tab.uinEdit.text(),
                                        key=self.tab.keyEdit.text(),
-                                       option=text)
+                                       option=text,
+                                       filename=filename_option,
+                                       sleeptime=int(waittime_option))
             self.thread.signal.connect(self.spidercallback)
             self.thread.start()
             self.statusInfo.setText("正在爬取，请等待......")
@@ -127,17 +216,17 @@ class SpiderTab(QWidget):
             pass
 
     def spidercallback(self, msg):
-        if msg['state'] == 'success':
-            self.btn.setEnabled(True)
-            self.statusInfo.setText(None)
-            self.tab.bizEdit.setText(None)
-            self.tab.uinEdit.setText(None)
-            self.tab.keyEdit.setText(None)
-            self.tab.urlEdit.setText(None)
+        print(msg)
+        if msg == None:
             QMessageBox.information(self, "成功", "爬取数据并保存成功！共耗时%.2fs" % msg['time'], QMessageBox.Yes, QMessageBox.Yes)
-        elif msg['error'] != '':
-            QMessageBox.critical(self, '错误', msg, QMessageBox.Abort)
-
+        else :
+            QMessageBox.critical(self, '错误', msg, QMessageBox.Abort, QMessageBox.Abort)
+        self.btn.setEnabled(True)
+        self.statusInfo.setText(None)
+        self.tab.bizEdit.setText(None)
+        self.tab.uinEdit.setText(None)
+        self.tab.keyEdit.setText(None)
+        self.tab.urlEdit.setText(None)
 
 
 if __name__ == '__main__':

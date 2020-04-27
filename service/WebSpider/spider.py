@@ -13,14 +13,15 @@ class PassageSpider:
                  biz,
                  uin,
                  offset='0',
-                 count='10'
+                 count='10',
+                 sleeptime=10
                  ):
         self.offset = offset
         self.count = count
         self.biz = biz
         self.uin = uin
         self.key = key
-        self.sleeptime = 10 #休眠10秒
+        self.sleeptime = sleeptime
         self.pass_url = reparams.get_request_url()
         self.datatmsp = pd.DataFrame(columns=['id', 'title', 'url', 'datetime', 'copyright'])
         self.headers = reparams.get_request_header()
