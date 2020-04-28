@@ -2,3 +2,7 @@
 data/pdf/*.pdf
 data/*.xlsx
 data/*.csv
+__pycache__/
+*.pyc
+config/__pycache__/RequestParams.cpython-37.pyc
+__pycache__/get_proxies.cpython-37.pyc
