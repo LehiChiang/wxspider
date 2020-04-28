@@ -1,9 +1,7 @@
-import sys
-
-import qtawesome as qta
+from qtawesome import icon
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QListWidgetItem, QVBoxLayout, QWidget, QLabel, QApplication, QListWidget
+from PyQt5.QtWidgets import QListWidgetItem, QVBoxLayout, QWidget, QLabel, QListWidget
 
 import CommomHelper
 
@@ -22,7 +20,7 @@ class LeftListWidget(QListWidget):
 
         for menu in menu_data['menu']:
             item = QListWidgetItem()  # 创建QListWidgetItem对象
-            item.setIcon(qta.icon(menu['icon'],color='#fff'))
+            item.setIcon(icon(menu['icon'],color='#fff'))
             self.addItem(item)
             self.setItemWidget(item, self.get_Item_Widget(menu['title']))
 
@@ -35,10 +33,3 @@ class LeftListWidget(QListWidget):
         self.layout_main.addWidget(self.title)
         wight.setLayout(self.layout_main)
         return wight
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    listWidget = LeftListWidget()
-    listWidget.show()
-    sys.exit(app.exec_())

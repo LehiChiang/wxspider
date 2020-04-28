@@ -1,4 +1,4 @@
-import json
+from json import load
 
 
 def get_request_params(biz, uin, offset, count, key, appmsg_token='', pass_ticket=''):
@@ -6,7 +6,6 @@ def get_request_params(biz, uin, offset, count, key, appmsg_token='', pass_ticke
     return {
             'action': 'getmsg',
             '__biz': biz,
-            'f': 'json',
             'offset': offset,  # offset是改变的，它的值是上次的offset的值加上上次的count值
             'count': count,
             'is_ok': '1',
@@ -20,11 +19,11 @@ def get_request_params(biz, uin, offset, count, key, appmsg_token='', pass_ticke
 
 
 def get_request_url():
-        return json.load(open('../config/url.json', 'r', encoding='utf-8'))['url']
+        return load(open('../config/url.json', 'r', encoding='utf-8'))['url']
 
 
 def get_request_header():
-        return json.load(open('../config/header.json', 'r', encoding='utf-8'))
+        return load(open('../config/header.json', 'r', encoding='utf-8'))
 
 def get_proxies():
-        return json.load(open('../config/proxies.json', 'r', encoding='utf-8'))
+        return load(open('../config/proxies.json', 'r', encoding='utf-8'))

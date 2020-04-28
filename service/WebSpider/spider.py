@@ -1,9 +1,10 @@
-import requests
-import time
-import os
-import json
-import pandas as pd
-import config.RequestParams as reparams
+from json import loads
+from time import strftime, localtime, sleep
+from os.path import join
+from pandas import DataFrame
+from requests import packages, get
+
+from config.RequestParams import get_request_url, get_request_header, get_request_params
 
 
 class PassageSpider:
@@ -22,9 +23,9 @@ class PassageSpider:
         self.uin = uin
         self.key = key
         self.sleeptime = sleeptime
-        self.pass_url = reparams.get_request_url()
-        self.datatmsp = pd.DataFrame(columns=['id', 'title', 'url', 'datetime', 'copyright'])
-        self.headers = reparams.get_request_header()
+        self.pass_url = get_request_url()
+        self.datatmsp = DataFrame(columns=['id', 'title', 'url', 'datetime', 'copyright'])
+        self.headers = get_request_header()
         # ip = get_proxies.get_proxies()
         # print('Proxy IP: ', ip)
         # self.proxies = {ip.split(':')[0]:ip}
@@ -35,14 +36,14 @@ class PassageSpider:
         :param getall:
         :return:
         '''
-        requests.packages.urllib3.disable_warnings()
-        result = requests.get(url=self.pass_url,
+        packages.urllib3.disable_warnings()
+        result = get(url=self.pass_url,
                               # proxies=self.proxies,
                               headers=self.headers,
-                              params=reparams.get_request_params(self.biz, self.uin, self.offset, self.count, self.key),
+                              params=get_request_params(self.biz, self.uin, self.offset, self.count, self.key),
                               verify=False,)
         print('URL: ', result.url)
-        html = json.loads(result.text)
+        html = loads(result.text)
         self.parse_json(html, getall, filename)
 
     def parse_json(self, html, getall, filename):
@@ -53,12 +54,12 @@ class PassageSpider:
         '''
         can_msg_continue = html['can_msg_continue']
         next_offset = html['next_offset']
-        json_list = json.loads(html['general_msg_list'])['list']
+        json_list = loads(html['general_msg_list'])['list']
 
         for item in json_list:
             id = item['comm_msg_info']['id']
             datatime = item['comm_msg_info']['datetime']
-            time_ = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(datatime)))
+            time_ = strftime("%Y-%m-%d %H:%M:%S", localtime(int(datatime)))
             try:
                 title_ = item['app_msg_ext_info']['title']
             except:
@@ -72,7 +73,7 @@ class PassageSpider:
 
             if title_ != "":
                 #print(id, title_, content_url_, time_)
-                df_insert = pd.DataFrame({'id':[id],
+                df_insert = DataFrame({'id':[id],
                                           'title':[title_],
                                           'url':[content_url_],
                                           'datetime':[time_],
@@ -89,7 +90,7 @@ class PassageSpider:
                     except:
                         copyright_ = ''
                     #print(id, title_, content_url_, time_)
-                    df_insert = pd.DataFrame({'id': [id],
+                    df_insert = DataFrame({'id': [id],
                                               'title': [title_],
                                               'url': [content_url_],
                                               'datetime': [time_],
@@ -101,7 +102,7 @@ class PassageSpider:
         self.datatmsp.drop(self.datatmsp.index, inplace=True)
 
         if can_msg_continue == 1 and getall:
-            time.sleep(self.sleeptime)
+            sleep(self.sleeptime)
             self.offset = next_offset
             self.request_url(getall=True, filename=filename)
 
@@ -111,7 +112,7 @@ class PassageSpider:
         :return:
         '''
         self.datatmsp.drop_duplicates()
-        self.datatmsp.to_csv(os.path.join('../data', filename),
+        self.datatmsp.to_csv(join('../data', filename),
                              encoding='utf_8_sig',
                              mode='a',
                              index=False,

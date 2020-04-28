@@ -1,9 +1,5 @@
-import sys
-
-from PyQt5 import QtWidgets
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QLabel, QTabWidget, QWidget, QVBoxLayout, QHBoxLayout, \
-    QApplication
+from PyQt5.QtWidgets import QLabel, QTabWidget, QWidget, QVBoxLayout, QHBoxLayout, QGraphicsOpacityEffect
 
 
 class ObjectDetectionTabs(QTabWidget):
@@ -26,7 +22,7 @@ class ObjectDetectionTabs(QTabWidget):
 
         self.setCurrentIndex(0)
 
-        optitle = QtWidgets.QGraphicsOpacityEffect()
+        optitle = QGraphicsOpacityEffect()
         optitle.setOpacity(0.7)
         self.setGraphicsEffect(optitle)
         self.tab1UI()
@@ -119,9 +115,3 @@ class ObjectDetectionTab(QWidget):
         vbox.addWidget(self.tab)
         vbox.addLayout(self.statusBar)
         self.setLayout(vbox)
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    win = ObjectDetectionTab()
-    win.show()
-    sys.exit(app.exec_())

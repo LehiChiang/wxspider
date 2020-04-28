@@ -1,12 +1,11 @@
-import sys
+from sys import argv, exit
 
-import qtawesome
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtCore import QSize
+from qtawesome import icon
+from PyQt5.QtCore import QSize, Qt, QObject
 from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox, QDesktopWidget, QHBoxLayout, \
     QVBoxLayout, QMainWindow, QGridLayout, QToolButton, QFrame, QLabel, \
     QStackedWidget
-from PyQt5.QtGui import QIcon, QCursor
+from PyQt5.QtGui import QIcon, QCursor, QMouseEvent
 
 from CommomHelper import CommonHelper
 from win.CV.CVTabs import ObjectDetectionTab
@@ -31,7 +30,7 @@ class MainWindowUI(QMainWindow):
     def initUI(self):
 
         self.leftclose = QToolButton()
-        self.leftclose.setIcon(qtawesome.icon('fa.times', color='white'))
+        self.leftclose.setIcon(icon('fa.times', color='white'))
         self.leftclose.setIconSize(QSize(self.iconsizenum, self.iconsizenum))
         self.leftclose.setObjectName('left_close')
         self.leftclose.setToolTip('关闭程序')
@@ -39,7 +38,7 @@ class MainWindowUI(QMainWindow):
         self.leftclose.clicked.connect(self.quitbtnclick)
 
         self.leftvisit = QToolButton()
-        self.leftvisit.setIcon(qtawesome.icon('fa5s.window-maximize', color='white'))
+        self.leftvisit.setIcon(icon('fa5s.window-maximize', color='white'))
         self.leftvisit.setIconSize(QSize(self.iconsizenum, self.iconsizenum))
         self.leftvisit.setObjectName('left_visit')
         self.leftvisit.setToolTip('最大化界面')
@@ -47,7 +46,7 @@ class MainWindowUI(QMainWindow):
         self.leftvisit.clicked.connect(self.windowMaximize)
 
         self.leftmini = QToolButton()
-        self.leftmini.setIcon(qtawesome.icon('fa5s.window-minimize', color='white'))
+        self.leftmini.setIcon(icon('fa5s.window-minimize', color='white'))
         self.leftmini.setIconSize(QSize(self.iconsizenum, self.iconsizenum))
         self.leftmini.setObjectName('left_mini')
         self.leftmini.setToolTip('最小化界面')
@@ -105,7 +104,7 @@ class MainWindowUI(QMainWindow):
         self.leftlist.setObjectName('fun')
         self.leftlist.currentRowChanged.connect(self.display)
         self.left_layout.addWidget(self.left_label_1)
-        self.left_layout.addWidget(self.leftlist, alignment=QtCore.Qt.AlignHCenter)
+        self.left_layout.addWidget(self.leftlist, alignment=Qt.AlignHCenter)
         self.left_layout.addWidget(self.left_label_2)
         self.left_layout.addStretch(1)
 
@@ -116,8 +115,8 @@ class MainWindowUI(QMainWindow):
         self.resize(self.screenWidth, self.screenHeight)
         self.setWindowTitle('微信信息验证')
         self.setWindowIcon(QIcon('res/icon.png'))
-        self.setAttribute(QtCore.Qt.WA_TranslucentBackground)
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setWindowFlags(Qt.FramelessWindowHint)
         self.center()
 
     def display(self,i):
@@ -133,31 +132,31 @@ class MainWindowUI(QMainWindow):
             event.ignore()
 
     def windowMaximize(self):
-        if self.windowState() == QtCore.Qt.WindowNoState:
-            self.setWindowState(QtCore.Qt.WindowMaximized)
-        elif self.windowState() == QtCore.Qt.WindowMaximized:
-            self.setWindowState(QtCore.Qt.WindowNoState)
+        if self.windowState() == Qt.WindowNoState:
+            self.setWindowState(Qt.WindowMaximized)
+        elif self.windowState() == Qt.WindowMaximized:
+            self.setWindowState(Qt.WindowNoState)
 
     def windowMinimize(self):
-        self.setWindowState(QtCore.Qt.WindowMinimized)
+        self.setWindowState(Qt.WindowMinimized)
 
     def mousePressEvent(self, event):
-        if event.button()==QtCore.Qt.LeftButton:
+        if event.button()==Qt.LeftButton:
             self.m_flag=True
             self.m_Position=event.globalPos()-self.pos() #获取鼠标相对窗口的位置
             event.accept()
-            self.setCursor(QCursor(QtCore.Qt.OpenHandCursor))  #更改鼠标图标
+            self.setCursor(QCursor(Qt.OpenHandCursor))  #更改鼠标图标
 
     def mouseMoveEvent(self, QMouseEvent):
-        if QtCore.Qt.LeftButton and self.m_flag:
+        if Qt.LeftButton and self.m_flag:
             self.move(QMouseEvent.globalPos()-self.m_Position)#更改窗口位置
             QMouseEvent.accept()
 
     def mouseReleaseEvent(self, QMouseEvent):
         self.m_flag=False
-        self.setCursor(QCursor(QtCore.Qt.ArrowCursor))
+        self.setCursor(QCursor(Qt.ArrowCursor))
 
-    def mouseDoubleClickEvent(self, a0: QtGui.QMouseEvent):
+    def mouseDoubleClickEvent(self, a0: QMouseEvent):
         self.windowMaximize()
 
     def center(self):
@@ -171,10 +170,10 @@ class MainWindowUI(QMainWindow):
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
+    app = QApplication(argv)
     win = MainWindowUI()
     styleFile = 'res/style.qss'
     qssStyle = CommonHelper.readQss(styleFile)
     win.setStyleSheet(qssStyle)
     win.show()
-    sys.exit(app.exec_())
+    exit(app.exec_())

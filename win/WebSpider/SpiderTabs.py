@@ -1,13 +1,8 @@
-import json
-import sys
-import re
-
-import qtawesome
-from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtCore import QRegExp
-from PyQt5.QtGui import QFont, QIntValidator, QRegExpValidator
-from PyQt5.QtWidgets import QLabel, QFormLayout, QLineEdit, QTabWidget, QWidget, QApplication, QVBoxLayout, \
-    QPushButton, QHBoxLayout, QInputDialog, QMessageBox, QGridLayout
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QFont
+from PyQt5.QtWidgets import QLabel, QFormLayout, QLineEdit, QTabWidget, QWidget, QVBoxLayout, \
+    QPushButton, QHBoxLayout, QInputDialog, QMessageBox
 
 from CommomHelper import CommonHelper
 from service.WebSpider.parse import get_url_param
@@ -18,7 +13,6 @@ from thread.WebSpider.SpiderThread import SpiderThread
 class SpiderSettingTab(QWidget):
     def __init__(self):
         super(SpiderSettingTab, self).__init__()
-        self.flg=True
         self.setupUI()
 
     def setupUI(self):
@@ -42,7 +36,7 @@ class SpiderSettingTab(QWidget):
 
         hbox1 = QHBoxLayout()
         hbox1.addStretch(1)
-        hbox1.addWidget(self.label1, 1, alignment=QtCore.Qt.AlignTop)
+        hbox1.addWidget(self.label1, 1, alignment=Qt.AlignTop)
         hbox1.addLayout(self.firstBlock_layout, 2)
         hbox1.addStretch(1)
 
@@ -52,18 +46,11 @@ class SpiderSettingTab(QWidget):
         self.save_btn.clicked.connect(self.savebtnclick)
 
         grid.addLayout(hbox1)
-        grid.addWidget(self.save_btn, alignment=QtCore.Qt.AlignCenter)
+        grid.addWidget(self.save_btn, alignment=Qt.AlignCenter)
         grid.addStretch(1)
         self.setLayout(grid)
         self.readSetting()
 
-
-    def jobCode(self, txtstr, regex):
-        result=re.search(regex, txtstr)
-        if result.group()==txtstr:
-            return self.flg == True
-        else:
-            return self.flg==False
 
     def savebtnclick(self):
         filename = self.firstBlock_filename_input.text()
@@ -75,7 +62,7 @@ class SpiderSettingTab(QWidget):
         self.thread.start()
 
     def savebtnclickcallback(self, msg):
-        if msg == None:
+        if msg == 'activate':
             QMessageBox.information(self, "成功", "设置保存成功！", QMessageBox.Yes, QMessageBox.Yes)
         else:
             QMessageBox.critical(self, '错误', msg, QMessageBox.Abort)
@@ -216,21 +203,18 @@ class SpiderTab(QWidget):
             pass
 
     def spidercallback(self, msg):
-        print(msg)
-        if msg == None:
-            QMessageBox.information(self, "成功", "爬取数据并保存成功！共耗时%.2fs" % msg['time'], QMessageBox.Yes, QMessageBox.Yes)
-        else :
-            QMessageBox.critical(self, '错误', msg, QMessageBox.Abort, QMessageBox.Abort)
-        self.btn.setEnabled(True)
-        self.statusInfo.setText(None)
-        self.tab.bizEdit.setText(None)
-        self.tab.uinEdit.setText(None)
-        self.tab.keyEdit.setText(None)
-        self.tab.urlEdit.setText(None)
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    win = SpiderTab()
-    win.show()
-    sys.exit(app.exec_())
+        try:
+            if msg == 'activate':
+                print('Scraping Successfully!')
+                QMessageBox.information(self, "成功", "爬取数据并保存成功！", QMessageBox.Yes, QMessageBox.Yes)
+            else:
+                print('There is something wrong with the URL!')
+                QMessageBox.critical(self, '错误', '爬取失败，请检查合理的url路径！', QMessageBox.Abort, QMessageBox.Abort)
+            self.btn.setEnabled(True)
+            self.statusInfo.setText(None)
+            self.tab.bizEdit.setText(None)
+            self.tab.uinEdit.setText(None)
+            self.tab.keyEdit.setText(None)
+            self.tab.urlEdit.setText(None)
+        except Exception as e:
+            print(e)

@@ -1,18 +1,15 @@
-import traceback
-
-from PyQt5 import QtCore
-from PyQt5.QtCore import pyqtSignal
-import os
-import time
-import pandas as pd
+from traceback import format_exc
+from PyQt5.QtCore import pyqtSignal, QThread
+from os.path import join
+from time import clock, sleep
+from pandas import DataFrame
 
 from service.WebSpider.spider import PassageSpider
 
-class SpiderThread(QtCore.QThread):
+class SpiderThread(QThread):
 
     signal = pyqtSignal(str)
 
-    msg = {}
 
     def __init__(self, biz, uin, key, option, filename, sleeptime):
         super(SpiderThread, self).__init__()
@@ -31,10 +28,10 @@ class SpiderThread(QtCore.QThread):
             option = self.option
             filename = self.filename
 
-            titledata = pd.DataFrame(columns=['id', 'title', 'url', 'datetime', 'copyright'])
-            titledata.to_csv(os.path.join('../data', filename), encoding='utf_8_sig', index=False)
+            titledata = DataFrame(columns=['id', 'title', 'url', 'datetime', 'copyright'])
+            titledata.to_csv(join('../data', filename), encoding='utf_8_sig', index=False)
 
-            start = time.clock()
+            start = clock()
             if option == 'all':
                 spider = PassageSpider(offset=0,
                                        count=10,
@@ -56,9 +53,10 @@ class SpiderThread(QtCore.QThread):
                     spider.request_url(getall=False, filename=filename)
                     spider.offset += spider.count
                     spider.save_xls(filename=filename)
-                    time.sleep(spider.sleeptime)
-            end = time.clock()
+                    sleep(spider.sleeptime)
+            end = clock()
+            print(end-start)
         except Exception:
-            e = str(traceback.format_exc())
+            e = str(format_exc())
             self.signal.emit(e)
-
+        self.signal.emit('activate')
