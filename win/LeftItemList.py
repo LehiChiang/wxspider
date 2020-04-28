@@ -15,7 +15,7 @@ class LeftListWidget(QListWidget):
 
         self.setIconSize(QSize(24, 24))
         self.setFont(QFont('黑体', 11))
-        self.setFixedWidth(200)
+        #self.setFixedWidth(240)
         self.setViewMode(QListWidget.ListMode)
 
         for menu in menu_data['menu']:

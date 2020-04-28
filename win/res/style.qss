@@ -6,10 +6,21 @@ QLabel#content{
     font-size:15px;
     font-family:Century Gothic;
 }
+
+
+
 QLineEdit {
-    font-size: 15px;
+    color: #495057;
+    background-color: #fff;
+    border: 2px solid #ced4da;
+    border-radius: 5px;
+    font-size: 20px;
+    border-color: #ebedf2;
     padding: 5px;
-    font-family:Century Gothic;
+    margin: 0px 10px;
+}
+QLineEdit:focus{
+    border-color: #3e93ff;
 }
 
 
@@ -145,11 +156,11 @@ QListWidget#fun{
     border:none;
 }
 QListWidget#fun::Item{
-     height:32px;
+     height:42px;
      padding: 3px 7px;
      border: none;
      background: none;
-     border-radius:3px;
+     border-radius:5px;
      margin:5px 6px;
 }
 QListWidget#fun::Item:hover{
