@@ -22,9 +22,9 @@ class ObjectDetectionTabs(QTabWidget):
 
         self.setCurrentIndex(0)
 
-        optitle = QGraphicsOpacityEffect()
-        optitle.setOpacity(0.7)
-        self.setGraphicsEffect(optitle)
+        # optitle = QGraphicsOpacityEffect()
+        # optitle.setOpacity(0.7)
+        # self.setGraphicsEffect(optitle)
         self.tab1UI()
         self.tab2UI()
         self.tab3UI()

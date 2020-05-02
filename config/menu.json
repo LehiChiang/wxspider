@@ -9,6 +9,11 @@
       "icon": "fa.star",
       "title": "目标检测",
       "subtitle": "哈哈哈哈哈"
+    },
+    {
+      "icon": "fa.download",
+      "title": "下载管理",
+      "subtitle": "哈哈哈哈哈"
     }
   ]
 }

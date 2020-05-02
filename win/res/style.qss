@@ -14,10 +14,9 @@ QLineEdit {
     background-color: #fff;
     border: 2px solid #ced4da;
     border-radius: 5px;
-    font-size: 20px;
+    font-size: 17px;
     border-color: #ebedf2;
     padding: 5px;
-    margin: 0px 10px;
 }
 QLineEdit:focus{
     border-color: #3e93ff;
@@ -185,4 +184,15 @@ QLabel#tablabel{
 
 QLabel#menutitle{
     color: #fff;
+}
+
+QListWidget#download{
+    outline: 0px;
+    background-color:transparent;
+    border:none;
+}
+QListWidget#download::Item{
+     height:54px;
+     padding: 3px 7px;
+     background: none;
 }

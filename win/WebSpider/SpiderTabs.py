@@ -1,8 +1,8 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtWidgets import QLabel, QFormLayout, QLineEdit, QTabWidget, QWidget, QVBoxLayout, \
-    QPushButton, QHBoxLayout, QInputDialog, QMessageBox
+    QPushButton, QHBoxLayout, QInputDialog, QMessageBox, QAction
 
 from CommomHelper import CommonHelper
 from service.WebSpider.parse import get_url_param
@@ -26,22 +26,24 @@ class SpiderSettingTab(QWidget):
         self.firstBlock_filename_label = QLabel('文件名')
         self.firstBlock_filename_label.setObjectName('content')
         self.firstBlock_filename_input = QLineEdit()
+        self.firstBlock_filename_input.setDragEnabled(True)
         self.firstBlock_filename_input.setClearButtonEnabled(True)
         self.firstBlock_layout.addRow(self.firstBlock_filename_label, self.firstBlock_filename_input)
         self.firstBlock_waittime_label = QLabel('等待时间')
         self.firstBlock_waittime_label.setObjectName('content')
         self.firstBlock_waittime_input = QLineEdit()
+        self.firstBlock_waittime_input.setDragEnabled(True)
         self.firstBlock_waittime_input.setClearButtonEnabled(True)
         self.firstBlock_layout.addRow(self.firstBlock_waittime_label, self.firstBlock_waittime_input)
 
         hbox1 = QHBoxLayout()
         hbox1.addStretch(1)
         hbox1.addWidget(self.label1, 1, alignment=Qt.AlignTop)
-        hbox1.addLayout(self.firstBlock_layout, 2)
+        hbox1.addLayout(self.firstBlock_layout, 3)
         hbox1.addStretch(1)
 
         self.save_btn = QPushButton('保存更改')
-        self.save_btn.setFixedWidth(100)
+        self.save_btn.setFixedWidth(150)
         self.save_btn.resize(self.save_btn.sizeHint())
         self.save_btn.clicked.connect(self.savebtnclick)
 
@@ -91,16 +93,20 @@ class SpiderTabs(QTabWidget):
 
         self.bizEdit = QLineEdit()
         self.bizEdit.setClearButtonEnabled(True)
+        self.bizEdit.setDragEnabled(True)
         self.uinEdit = QLineEdit()
         self.uinEdit.setClearButtonEnabled(True)
+        self.uinEdit.setDragEnabled(True)
         self.keyEdit = QLineEdit()
         self.keyEdit.setClearButtonEnabled(True)
+        self.keyEdit.setDragEnabled(True)
 
         self.urlLabel = QLabel('输入URL（mp/profile_ext?action）：')
         self.urlLabel.setObjectName('content')
         self.urll = QLabel('URL')
         self.urll.setObjectName('content')
         self.urlEdit = QLineEdit()
+        self.urlEdit.setDragEnabled(True)
         self.urlEdit.setClearButtonEnabled(True)
 
         self.addTab(self.tab1, "Tab 1")
@@ -109,13 +115,14 @@ class SpiderTabs(QTabWidget):
 
         self.setCurrentIndex(1)
 
-        optitle = QtWidgets.QGraphicsOpacityEffect()
-        optitle.setOpacity(0.7)
-        self.setGraphicsEffect(optitle)
+        # optitle = QtWidgets.QGraphicsOpacityEffect()
+        # optitle.setOpacity(0.7)
+        # self.setGraphicsEffect(optitle)
         self.tab1UI()
         self.tab2UI()
         self.setTabToolTip(2, '爬取公众号的参数设置')
         self.setTabText(2, '设置')
+
 
     def tab1UI(self):
         layout = QFormLayout()
@@ -123,7 +130,11 @@ class SpiderTabs(QTabWidget):
         layout.addRow(self.uin, self.uinEdit)
         layout.addRow(self.key, self.keyEdit)
         self.setTabText(0, '手动输入')
-        self.tab1.setLayout(layout)
+        hbox = QHBoxLayout()
+        hbox.addStretch(1)
+        hbox.addLayout(layout)
+        hbox.addStretch(1)
+        self.tab1.setLayout(hbox)
 
     def tab2UI(self):
         layout = QFormLayout()

@@ -1,7 +1,7 @@
 from sys import argv, exit
 
 from qtawesome import icon
-from PyQt5.QtCore import QSize, Qt, QObject
+from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox, QDesktopWidget, QHBoxLayout, \
     QVBoxLayout, QMainWindow, QGridLayout, QToolButton, QFrame, QLabel, \
     QStackedWidget
@@ -9,6 +9,7 @@ from PyQt5.QtGui import QIcon, QCursor, QMouseEvent
 
 from CommomHelper import CommonHelper
 from win.CV.CVTabs import ObjectDetectionTab
+from win.DownloadPage.DownloadTabs import DownloadTab
 from win.LeftItemList import LeftListWidget
 from win.WebSpider.SpiderTabs import SpiderTab
 
@@ -69,9 +70,10 @@ class MainWindowUI(QMainWindow):
         self.stack=QStackedWidget(self)
         self.spidertab = SpiderTab()
         self.cvtab = ObjectDetectionTab()
-        self.demotab = QWidget()
+        self.downloadtab = DownloadTab()
         self.stack.addWidget(self.spidertab)
         self.stack.addWidget(self.cvtab)
+        self.stack.addWidget(self.downloadtab)
 
         #右侧全部
         self.vbox = QVBoxLayout()
