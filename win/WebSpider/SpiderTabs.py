@@ -113,6 +113,9 @@ class SpiderTabs(QTabWidget):
         self.addTab(self.tab2, "Tab 2")
         self.addTab(self.tab3, 'Tab 3')
 
+        self.setMovable(True)
+        self.setElideMode(Qt.ElideMiddle)
+
         self.setCurrentIndex(1)
 
         # optitle = QtWidgets.QGraphicsOpacityEffect()

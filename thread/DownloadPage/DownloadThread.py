@@ -7,6 +7,7 @@ class DownloadThread(QThread):
     trigger = pyqtSignal(int)
     trigger2 = pyqtSignal(str)
     trigger3 = pyqtSignal(str)
+    trigger4 = pyqtSignal(str)
 
     url = ""
     basedir = "./"
@@ -16,6 +17,7 @@ class DownloadThread(QThread):
 
     def run(self):
         url = self.url
+        self.trigger4.emit(url.split('/')[-1])
         path = join(self.basedir, basename(url))
         start = time.time()
         size = 0
@@ -34,4 +36,4 @@ class DownloadThread(QThread):
                     # print("\r" + "[下载进度]：%s%.2f%%" % (
                     #     ">" * int(size * 50 / content_size), float(size / content_size * 100)), end="")
             end = time.time()  # 结束时间
-            self.trigger2.emit("下载完成！用时%.2f秒" % (end - start))
+            self.trigger2.emit("下载完成！用时%.2f秒|%s"% (end - start, self.basedir))

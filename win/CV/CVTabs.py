@@ -1,3 +1,4 @@
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLabel, QTabWidget, QWidget, QVBoxLayout, QHBoxLayout, QGraphicsOpacityEffect
 
@@ -19,7 +20,8 @@ class ObjectDetectionTabs(QTabWidget):
         self.addTab(self.tab4, "Tab 4")
         self.addTab(self.tab5, "Tab 5")
         self.addTab(self.tab6, "Tab 6")
-
+        self.setMovable(True)
+        self.setElideMode(Qt.ElideMiddle)
         self.setCurrentIndex(0)
 
         # optitle = QGraphicsOpacityEffect()

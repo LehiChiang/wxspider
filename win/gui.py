@@ -10,6 +10,7 @@ from PyQt5.QtGui import QIcon, QCursor, QMouseEvent
 from CommomHelper import CommonHelper
 from win.CV.CVTabs import ObjectDetectionTab
 from win.DownloadPage.DownloadTabs import DownloadTab
+from win.English.EnglishTabs import EnglishTab
 from win.LeftItemList import LeftListWidget
 from win.WebSpider.SpiderTabs import SpiderTab
 
@@ -70,9 +71,11 @@ class MainWindowUI(QMainWindow):
         self.stack=QStackedWidget(self)
         self.spidertab = SpiderTab()
         self.cvtab = ObjectDetectionTab()
+        self.englishtab = EnglishTab()
         self.downloadtab = DownloadTab()
         self.stack.addWidget(self.spidertab)
         self.stack.addWidget(self.cvtab)
+        self.stack.addWidget(self.englishtab)
         self.stack.addWidget(self.downloadtab)
 
         #右侧全部
@@ -100,15 +103,15 @@ class MainWindowUI(QMainWindow):
         #左侧的按钮们
         self.left_label_1 = QLabel("功能")
         self.left_label_1.setObjectName('left_label')
-        self.left_label_2 = QLabel("设置")
-        self.left_label_2.setObjectName('left_label')
+        # self.left_label_2 = QLabel("设置")
+        # self.left_label_2.setObjectName('left_label')
         self.leftlist=LeftListWidget()
         self.leftlist.setObjectName('fun')
         self.leftlist.currentRowChanged.connect(self.display)
         self.left_layout.addWidget(self.left_label_1)
         self.left_layout.addWidget(self.leftlist, alignment=Qt.AlignHCenter)
-        self.left_layout.addWidget(self.left_label_2)
-        self.left_layout.addStretch(1)
+        # self.left_layout.addWidget(self.left_label_2)
+        # self.left_layout.addStretch(1)
 
         #最主窗体的设置
         self.main_layout.setSpacing(0)

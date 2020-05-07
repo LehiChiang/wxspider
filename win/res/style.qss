@@ -31,13 +31,11 @@ QTabWidget::tab-bar {
     alignment: left;
 }
 QTabBar::tab {
-    margin-right: 2ex;
-    padding: 3px 5px;
+    padding: 2px 2px;
     color: #585c5d;
-    font: bold;
-    font-size: 15px;
+    font-size: 14px;
     font-family: 黑体;
-    min-width: 28ex;
+    min-width:24ex;
     min-height: 8ex;
     border: 0!important;
     border-top-left-radius: 10px!important;
@@ -192,7 +190,56 @@ QListWidget#download{
     border:none;
 }
 QListWidget#download::Item{
-     height:54px;
+     height:60px;
      padding: 3px 7px;
      background: none;
+}
+
+
+QProgressBar{
+    text-align: center;
+    color: rgb(255, 85, 0);
+    border:1px solid #6861ce;
+    border-radius: 6px;
+}
+QProgressBar::chunk{
+    background:#6861ce;
+}
+
+
+QListWidget#english{
+    outline: 0px;
+    background-color:transparent;
+    border:none;
+}
+QListWidget#english::Item{
+     height:150px;
+     padding: 3px 7px;
+     background: none;
+}
+
+
+
+QLabel#engtitle{
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+    color: #000;
+    line-height: 1.3;
+    font-weight: 700;
+    font-size: 20px;
+    margin-left:4px;
+    text-overflow: -o-ellipsis-lastline;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-clamp: 2;
+}
+QLabel#engtitle:hover{
+    color: #e64946;
+}
+QLabel#engdes{
+    margin-left:4px;
+}
+QLabel#engmid{
+    color:#979797;
+    margin-left:4px;
 }
