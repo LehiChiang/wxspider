@@ -1,9 +1,8 @@
-import json
 import sys
 import requests
 from PyQt5.QtCore import QSize, QUrl
 from PyQt5.QtGui import QImage, QPixmap, QDesktopServices
-from PyQt5.QtWidgets import QVBoxLayout, QWidget, QLabel, QListWidget, QHBoxLayout, QProgressBar, QToolButton, QAction, \
+from PyQt5.QtWidgets import QVBoxLayout, QWidget, QLabel, QListWidget, QHBoxLayout, \
     QListWidgetItem, QApplication
 
 
@@ -16,7 +15,7 @@ class EnglishListWidget(QListWidget):
         self.setObjectName('english')
         self.itemClicked.connect(self.clicked)
 
-        for menu in json.loads(menulist):
+        for menu in menulist:
             item = QListWidgetItem()
             self.addItem(item)
             self.setItemWidget(item, self.get_Item_Widget(menu['img'], menu['url'], menu['title'], menu['time'], menu['author'], menu['description']))

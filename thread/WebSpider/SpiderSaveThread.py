@@ -12,9 +12,6 @@ class SpiderSaveThread(QThread):
         super(SpiderSaveThread, self).__init__()
         self.setting = setting
 
-    def __del__(self):
-        self.wait()
-
     def run(self):
         try:
             with open('../config/wxspider_setting.cm', 'w', encoding='utf-8') as fp:

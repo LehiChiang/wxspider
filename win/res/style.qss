@@ -243,3 +243,34 @@ QLabel#engmid{
     color:#979797;
     margin-left:4px;
 }
+
+QComboBox{
+    color: #495057;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-size: 17px;
+    border-color: #202940;
+    padding: 3px;
+}
+QComboBox:focus{
+   border-color: #3e93ff;
+   border-radius:5px;
+}
+QComboBox::drop-down{
+
+    border-left: 1px solid #ffffff;
+}
+QComboBox::down-arrow {
+    height:30px;
+    width:20px;
+}
+QComboBox QAbstractItemView {
+    outline: 0px;
+    background-color:transparent;
+    border:1px solid #202940;
+    border-bottom-left-radius:5px;
+    border-bottom-right-radius:5px;
+    padding: 3px 7px;
+}
