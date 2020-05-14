@@ -3,7 +3,7 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QListWidgetItem, QVBoxLayout, QWidget, QLabel, QListWidget
 
-import CommomHelper
+from win import CommomHelper
 
 
 class LeftListWidget(QListWidget):

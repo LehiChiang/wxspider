@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox, QDesktopWidget, 
     QStackedWidget
 from PyQt5.QtGui import QIcon, QCursor, QMouseEvent
 
-from CommomHelper import CommonHelper
+from win.CommomHelper import CommonHelper
 from win.CV.CVTabs import ObjectDetectionTab
 from win.DownloadPage.DownloadTabs import DownloadTab
 from win.English.EnglishTabs import EnglishTab

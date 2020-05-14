@@ -1,10 +1,9 @@
-from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QFont, QIcon
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLabel, QFormLayout, QLineEdit, QTabWidget, QWidget, QVBoxLayout, \
-    QPushButton, QHBoxLayout, QInputDialog, QMessageBox, QAction
+    QPushButton, QHBoxLayout, QInputDialog, QMessageBox
 
-from CommomHelper import CommonHelper
+from win.CommomHelper import CommonHelper
 from service.WebSpider.parse import get_url_param
 from thread.WebSpider.SpiderSaveThread import SpiderSaveThread
 from thread.WebSpider.SpiderThread import SpiderThread
@@ -225,10 +224,10 @@ class SpiderTab(QWidget):
                 print('There is something wrong with the URL!')
                 QMessageBox.critical(self, '错误', '爬取失败，请检查合理的url路径！', QMessageBox.Abort, QMessageBox.Abort)
             self.btn.setEnabled(True)
-            self.statusInfo.setText(None)
-            self.tab.bizEdit.setText(None)
-            self.tab.uinEdit.setText(None)
-            self.tab.keyEdit.setText(None)
-            self.tab.urlEdit.setText(None)
+            self.statusInfo.setText('')
+            self.tab.bizEdit.setText('')
+            self.tab.uinEdit.setText('')
+            self.tab.keyEdit.setText('')
+            self.tab.urlEdit.setText('')
         except Exception as e:
             print(e)

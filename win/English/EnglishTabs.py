@@ -6,7 +6,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QLabel, QTabWidget, QWidget, QVBoxLayout, QHBoxLayout, QApplication, \
     QComboBox
 
-import CommomHelper
+from win import CommomHelper
 from service.English.Magazines import Magazine
 from thread.English.MagazineThread import FetchPreMagazineListThread, FetchNextMagazineListThread, \
     FetchFirstMagazineListThread, FetchLastMagazineListThread, FetchCustomizedMagazineListThread
@@ -17,9 +17,9 @@ class SourceComboBox(QComboBox):
     def __init__(self):
         super(SourceComboBox, self).__init__()
 
-        self.menu_data = CommomHelper.CommonHelper.load_english_source('../config/english_source.cm')
+        self.menu_data = CommomHelper.CommonHelper.load_english_source('../../config/english_source.cm')
         for menu in self.menu_data['source']:
-            self.addItem(menu)
+            self.insertItem(int(menu['id']), menu['title'], menu['url'])
         self.setCurrentIndex(-1)
 
         self.setMinimumWidth(200)
@@ -71,12 +71,17 @@ class EnglishTab(QWidget):
         self.setLayout(vbox)
 
     def Menu_Activate(self, index):
-        if index==0:
-            url = 'https://www.tianfateng.cn/tag/economist-official-translation-digest'
-        elif index==1:
-            url = 'https://www.tianfateng.cn/tag/nytimes'
-        self.generatetab(url)
-        self.first_btn_thread()
+        try:
+            for menu in self.comboMenu.menu_data['source']:
+                if int(menu['id']) == index:
+                    url = menu['url']
+                else:
+                    continue
+            self.generatetab(url)
+            self.first_btn_thread()
+        except Exception:
+            e = str(format_exc())
+            print(e)
 
     def magalist_callback(self, id, tabname, json, current_page, total_page):
         try:
