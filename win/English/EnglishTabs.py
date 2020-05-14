@@ -17,7 +17,7 @@ class SourceComboBox(QComboBox):
     def __init__(self):
         super(SourceComboBox, self).__init__()
 
-        self.menu_data = CommomHelper.CommonHelper.load_english_source('../../config/english_source.cm')
+        self.menu_data = CommomHelper.CommonHelper.load_english_source('../config/english_source.cm')
         for menu in self.menu_data['source']:
             self.insertItem(int(menu['id']), menu['title'], menu['url'])
         self.setCurrentIndex(-1)
