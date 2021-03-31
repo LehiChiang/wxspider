@@ -1,4 +1,4 @@
-lxml==4.5.0
+lxml==4.6.3
 QtAwesome==0.5.7
 requests==2.21.0
 pandas==1.0.3
