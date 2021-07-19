@@ -1,28 +1,27 @@
-from time import strftime, localtime
-
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QLabel, QTabWidget, QWidget, QVBoxLayout, QHBoxLayout, QGraphicsOpacityEffect, QLineEdit, \
-    QPushButton, QListWidgetItem, QMessageBox, QFileDialog, QTabBar, QSizePolicy
+from PyQt5.QtWidgets import QLabel, QTabWidget, QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, \
+    QPushButton, QListWidgetItem, QMessageBox, QFileDialog, QTabBar
 from qtawesome import icon
 
 from thread.DownloadPage.DownloadThread import DownloadThread
 from win.DownloadPage.DownloadItemList import DownloadingListWidget, DownloadedListWidget
 
+
 class TabBar(QTabBar):
     def tabSizeHint(self, index):
         size = QTabBar.tabSizeHint(self, index)
-        w = int(self.width()/self.count())
+        w = int(self.width() / self.count())
         return QSize(w, size.height())
 
+
 class DownloadTabs(QTabWidget):
-    def __init__(self,parent=None):
+    def __init__(self, parent=None):
         super(DownloadTabs, self).__init__(parent)
 
         self.tab1 = QWidget()
         self.tab2 = QWidget()
 
-        #self.setTabBar(TabBar())
         self.addTab(self.tab1, "正在下载")
         self.addTab(self.tab2, "已完成")
         self.setMovable(True)
@@ -47,7 +46,7 @@ class DownloadTabs(QTabWidget):
 
 
 class DownloadTab(QWidget):
-    def __init__(self,parent=None):
+    def __init__(self, parent=None):
         super(DownloadTab, self).__init__(parent)
         self.workthread = DownloadThread()
         self.workthread.trigger.connect(self.progressbar)
@@ -55,7 +54,7 @@ class DownloadTab(QWidget):
         self.workthread.trigger3.connect(self.filesize)
         self.workthread.trigger4.connect(self.filetitle)
 
-        #最上方
+        # 最上方
         label = QLabel('下载器')
         label.setObjectName('tablabel')
         label.setFont(QFont('黑体', 20))
@@ -63,15 +62,15 @@ class DownloadTab(QWidget):
         subTitle.setObjectName('tabsublabel')
         subTitle.setFont(QFont('黑体', 12))
 
-        #中间部分
+        # 中间部分
         self.firstRow = QHBoxLayout()
         self.secondRow = QHBoxLayout()
 
         self.urllabel = QLabel("下载链接:")
         self.urllabel.setObjectName('content')
         self.urledit = QLineEdit()
-        #self.urledit.setText('https://dldir1.qq.com/weixin/Windows/WeChatSetup.exe')
-        #self.urledit.setText('https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463C-AFF1-A69D9E530F96%7D%26iid%3D%7B9B1246D2-897D-C009-E882-BCA0E62162DB%7D%26lang%3Dzh-CN%26browser%3D4%26usagestats%3D1%26appname%3DGoogle%2520Chrome%26needsadmin%3Dprefers%26ap%3Dx64-stable-statsdef_1%26installdataindex%3Dempty/update2/installers/ChromeSetup.exe')
+        # self.urledit.setText('https://dldir1.qq.com/weixin/Windows/WeChatSetup.exe')
+        # self.urledit.setText('https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463C-AFF1-A69D9E530F96%7D%26iid%3D%7B9B1246D2-897D-C009-E882-BCA0E62162DB%7D%26lang%3Dzh-CN%26browser%3D4%26usagestats%3D1%26appname%3DGoogle%2520Chrome%26needsadmin%3Dprefers%26ap%3Dx64-stable-statsdef_1%26installdataindex%3Dempty/update2/installers/ChromeSetup.exe')
         self.downloadbtn = QPushButton("下载")
         self.downloadbtn.clicked.connect(self.down)
         self.firstRow.addWidget(self.urllabel)
@@ -88,7 +87,7 @@ class DownloadTab(QWidget):
         self.secondRow.addWidget(self.locedit)
         self.secondRow.addWidget(self.dirbtn)
 
-        #Tab部分
+        # Tab部分
         self.tab = DownloadTabs()
 
         vbox = QVBoxLayout()
@@ -102,10 +101,10 @@ class DownloadTab(QWidget):
     def down(self):
         try:
             if self.urledit.text() == '':
-                QMessageBox.information(self,"错误","URL不能为空")
+                QMessageBox.information(self, "错误", "URL不能为空")
                 return
             item = QListWidgetItem()  # 创建QListWidgetItem对象
-            item.setIcon(icon('fa.download',color='red'))
+            item.setIcon(icon('fa.download', color='red'))
             self.tab.downloadingtab.addItem(item)
             self.tab.downloadingtab.setItemWidget(item, self.tab.downloadingtab.get_Item_Widget())
             self.downloadbtn.setEnabled(False)
@@ -121,12 +120,14 @@ class DownloadTab(QWidget):
             self.downloadbtn.setEnabled(True)
             self.tab.downloadingtab.clear()
 
-    def downresult(self,info):
+    def downresult(self, info):
         infor, path = info.split('|')
         item = QListWidgetItem()
-        item.setIcon(icon('fa.download',color='green'))
+        item.setIcon(icon('fa.download', color='green'))
         self.tab.downloadedtab.addItem(item)
-        self.tab.downloadedtab.setItemWidget(item, self.tab.downloadedtab.get_Item_Widget(title=self.tmptitle, info=infor, url=path))
+        self.tab.downloadedtab.setItemWidget(item,
+                                             self.tab.downloadedtab.get_Item_Widget(title=self.tmptitle, info=infor,
+                                                                                    url=path))
 
     def filesize(self, size):
         self.tab.downloadingtab.sizelabel.setText(size)
@@ -136,5 +137,5 @@ class DownloadTab(QWidget):
         self.tab.downloadingtab.title.setText(title)
 
     def showDir(self):
-        download_path = QFileDialog.getExistingDirectory(self,"浏览",r"C:/Users/Administrator/Desktop")
+        download_path = QFileDialog.getExistingDirectory(self, "浏览", r"C:/Users/Administrator/Desktop")
         self.locedit.setText(download_path)

@@ -1,3 +1,4 @@
 {
-  "url": "https://mp.weixin.qq.com/mp/profile_ext"
+  "url": "https://mp.weixin.qq.com/mp/profile_ext",
+  "standard_url": "https://mp.weixin.qq.com/mp/profile_ext?action=getmsg&__biz=MzA3MzI4MjgzMw==&f=json&offset=10&count=10&appmsg_token=1085_IMGZhOp7E1a6QRiq5foSkt27KJ__Z_3jAQkzgA~~"
 }

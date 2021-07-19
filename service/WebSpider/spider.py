@@ -1,6 +1,5 @@
 from json import loads
 from time import strftime, localtime, sleep
-from os.path import join
 from pandas import DataFrame
 from requests import packages, get
 
@@ -10,9 +9,9 @@ from config.RequestParams import get_request_url, get_request_header, get_reques
 class PassageSpider:
 
     def __init__(self,
-                 key,
+                 appmsg_token,
                  biz,
-                 uin,
+                 cookie,
                  offset='0',
                  count='10',
                  sleeptime=10
@@ -20,12 +19,14 @@ class PassageSpider:
         self.offset = offset
         self.count = count
         self.biz = biz
-        self.uin = uin
-        self.key = key
+        self.appmsg_token = appmsg_token
         self.sleeptime = sleeptime
-        self.pass_url = get_request_url()
+        self.pass_url = "https://mp.weixin.qq.com/mp/profile_ext"
         self.datatmsp = DataFrame(columns=['id', 'title', 'url', 'datetime', 'copyright'])
-        self.headers = get_request_header()
+        self.headers = {"Host": "mp.weixin.qq.com", "Connection": "keep-alive",
+                        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36",
+                        "Accept-Encoding": "gzip, deflate, br", "Accept-Language": "zh-CN,zh;q=0.9", 'Cookie': cookie}
         # ip = get_proxies.get_proxies()
         # print('Proxy IP: ', ip)
         # self.proxies = {ip.split(':')[0]:ip}
@@ -38,10 +39,10 @@ class PassageSpider:
         '''
         packages.urllib3.disable_warnings()
         result = get(url=self.pass_url,
-                              # proxies=self.proxies,
-                              headers=self.headers,
-                              params=get_request_params(self.biz, self.uin, self.offset, self.count, self.key),
-                              verify=False,)
+                     # proxies=self.proxies,
+                     headers=self.headers,
+                     params=get_request_params(self.biz, self.offset, self.count, self.appmsg_token),
+                     verify=False)
         print('URL: ', result.url)
         html = loads(result.text)
         self.parse_json(html, getall, filename)
@@ -72,13 +73,13 @@ class PassageSpider:
             eleinums = item['app_msg_ext_info']['multi_app_msg_item_list']
 
             if title_ != "":
-                #print(id, title_, content_url_, time_)
-                df_insert = DataFrame({'id':[id],
-                                          'title':[title_],
-                                          'url':[content_url_],
-                                          'datetime':[time_],
-                                          'copyright':[copyright_]
-                                          })
+                # print(id, title_, content_url_, time_)
+                df_insert = DataFrame({'id': [id],
+                                       'title': [title_],
+                                       'url': [content_url_],
+                                       'datetime': [time_],
+                                       'copyright': [copyright_]
+                                       })
                 self.datatmsp = self.datatmsp.append(df_insert, ignore_index=True)
 
             if eleinums != []:
@@ -89,13 +90,13 @@ class PassageSpider:
                         copyright_ = ele['copyright_stat']
                     except:
                         copyright_ = ''
-                    #print(id, title_, content_url_, time_)
+                    # print(id, title_, content_url_, time_)
                     df_insert = DataFrame({'id': [id],
-                                              'title': [title_],
-                                              'url': [content_url_],
-                                              'datetime': [time_],
-                                              'copyright': [copyright_]
-                                              })
+                                           'title': [title_],
+                                           'url': [content_url_],
+                                           'datetime': [time_],
+                                           'copyright': [copyright_]
+                                           })
                     self.datatmsp = self.datatmsp.append(df_insert, ignore_index=True)
 
         self.save_xls(filename=filename)
@@ -107,13 +108,19 @@ class PassageSpider:
             self.request_url(getall=True, filename=filename)
 
     def save_xls(self, filename):
-        '''
+        """
         将数据保存到csv格式的文件中，并使用追加添加的模式
         :return:
-        '''
+        """
         self.datatmsp.drop_duplicates()
-        self.datatmsp.to_csv(join('../data', filename),
+        self.datatmsp.to_csv(filename,
                              encoding='utf_8_sig',
                              mode='a',
                              index=False,
                              header=False)
+
+
+if __name__ == "__main__":
+    spider = PassageSpider(appmsg_token='1085_IMGZhOp7E1a6QRiq5foSkt27KJ__Z_3jAQkzgA~~', biz='MzA3MzI4MjgzMw==',
+                           cookie='')
+    spider.request_url(False)

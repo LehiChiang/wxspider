@@ -32,8 +32,5 @@ class DownloadThread(QThread):
                     size += len(data)  # 已下载大小
                     num = int(size / content_size * 100)
                     self.trigger.emit(num)
-                    # \r 指定第一个字符开始，搭配end属性完成覆盖进度条
-                    # print("\r" + "[下载进度]：%s%.2f%%" % (
-                    #     ">" * int(size * 50 / content_size), float(size / content_size * 100)), end="")
             end = time.time()  # 结束时间
-            self.trigger2.emit("下载完成！用时%.2f秒|%s"% (end - start, self.basedir))
+            self.trigger2.emit("下载完成！用时%.2f秒|%s" % (end - start, self.basedir))

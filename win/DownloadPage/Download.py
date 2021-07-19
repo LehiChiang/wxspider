@@ -55,29 +55,29 @@ class DownLoad(QWidget):
         self.forthRow.addWidget(self.resrtbtn)
 
         self.main_layout = QGridLayout()
-        self.main_layout.addLayout(self.firstRow, 0,0,1,10)
-        self.main_layout.addLayout(self.secondRow, 1,0,1,10)
-        self.main_layout.addLayout(self.thirdRow, 2,1,1,8)
-        self.main_layout.addWidget(self.history, 3,0,4,10)
-        self.main_layout.addLayout(self.forthRow, 7,0,1,10)
+        self.main_layout.addLayout(self.firstRow, 0, 0, 1, 10)
+        self.main_layout.addLayout(self.secondRow, 1, 0, 1, 10)
+        self.main_layout.addLayout(self.thirdRow, 2, 1, 1, 8)
+        self.main_layout.addWidget(self.history, 3, 0, 4, 10)
+        self.main_layout.addLayout(self.forthRow, 7, 0, 1, 10)
         self.main_layout.setSpacing(10)
 
         self.setLayout(self.main_layout)
 
     def showDir(self):
-        download_path = QFileDialog.getExistingDirectory(self,"浏览",r"C:/Users/Administrator/Desktop")
+        download_path = QFileDialog.getExistingDirectory(self, "浏览", r"C:/Users/Administrator/Desktop")
         self.locedit.setText(download_path)
 
     def down(self):
         if self.urledit.text() == '':
-            QMessageBox.information(self,"错误","URL不能为空")
+            QMessageBox.information(self, "错误", "URL不能为空")
             return
         self.downloadbtn.setEnabled(False)
         self.workthread.url = self.urledit.text()
         self.workthread.basedir = self.locedit.text()
         self.workthread.start()
 
-    def downresult(self,info):
+    def downresult(self, info):
         self.history.append(info)
 
     def progressbar(self, num):
@@ -98,6 +98,7 @@ class DownLoad(QWidget):
             self.progresslabel.setText('')
         except Exception as e:
             print(e)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

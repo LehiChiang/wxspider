@@ -5,7 +5,6 @@ from PyQt5.QtCore import pyqtSignal, QThread
 
 
 class SpiderSaveThread(QThread):
-
     signal = pyqtSignal(str)
 
     def __init__(self, setting):
@@ -14,7 +13,7 @@ class SpiderSaveThread(QThread):
 
     def run(self):
         try:
-            with open('../config/wxspider_setting.cm', 'w', encoding='utf-8') as fp:
+            with open('config/wxspider_setting.cm', 'w', encoding='utf-8') as fp:
                 fp.write(dumps(self.setting, indent=4, ensure_ascii=False))
         except Exception as e:
             e = str(format_exc())
