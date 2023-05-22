@@ -1,5 +1,5 @@
 pandas==1.1.3
-requests==2.24.0
+requests==2.31.0
 QtAwesome==1.0.1
 beautifulsoup4==4.9.3
 PyQt5==5.15.1
